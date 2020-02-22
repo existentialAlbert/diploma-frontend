@@ -1,5 +1,5 @@
 <template>
-    $END$
+    пше ы
 </template>
 
 <script>
