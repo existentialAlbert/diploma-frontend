@@ -4,7 +4,6 @@
             <tr>
                 <td>
                     <label>2</label>
-
                 </td>
                 <td>
                     <a href="/personal-cab" v-if="false">Личный кабинет</a>

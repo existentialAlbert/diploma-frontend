@@ -10,7 +10,7 @@
                 Password
                 <input type="password" maxlength="40" :value="password">
             </label>
-            <button type="submit">Go learning!</button>
+            <button @click="logIn">Go learning!</button>
         </form>
     </div>
 </template>
@@ -23,6 +23,20 @@
             return {
                 login: "",
                 password: "",
+            }
+        },
+        methods:{
+            logIn: function () {
+                let req = new XMLHttpRequest();
+                req.open("POST", "https://tierion-jvm-project.herokuapp.com/api/auth/login");
+                req.setRequestHeader('Authorization', 'Bearer');
+                req.setRequestHeader("Content-Type", 'application/json');
+                req.setRequestHeader('Access-Control-Allow-Origin', "*");
+                req.setRequestHeader('Access-Control-Allow-Headers', 'X-Requested-With');
+                req.send(JSON.stringify({"password": this.password, "username": this.login}));
+                req.onload = () => {
+
+                }
             }
         }
     }

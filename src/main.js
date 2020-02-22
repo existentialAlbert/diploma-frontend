@@ -9,12 +9,13 @@ Vue.use(VueRouter);
 
 const routes = [
     {path: '/', component: Login},
-    {path: '/intro', component: Intro},
+    {path: 'intro', component: Intro},
     {path: '/registration', component: Registration}
 ];
 
 const router = new VueRouter({
-    routes
+    routes,
+    mode: 'history'
 });
 new Vue({
     render: h => h(App),
