@@ -1,16 +1,21 @@
 <template>
     <div id="app">
+        <Header></Header>
         <router-view></router-view>
     </div>
 </template>
-
 <script>
-/*    import Login from "@/components/Login";
+/*
+    import Login from "@/components/Login";
     import Header from "@/components/Header"
-    import Intro from "@/components/Intro"*/
-    export default {
+    import Intro from "@/components/Intro"
+*/
+import Header from "@/components/Header.vue";
+export default {
         name: 'App',
         components: {
+            Header
+
        /*     Login,
             Header,
             Intro*/

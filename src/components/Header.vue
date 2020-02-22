@@ -1,6 +1,18 @@
 <template>
     <div>
-        <label>2</label>
+        <table>
+            <tr>
+                <td>
+                    <label>2</label>
+
+                </td>
+                <td>
+                    <a href="/personal-cab" v-if="false">Личный кабинет</a>
+                    <a href="/registration" v-else>Нет аккаунта? Зарегистрируйтесь!</a>
+                </td>
+
+            </tr>
+        </table>
     </div>
 </template>
 
@@ -14,5 +26,6 @@
     div {
         background: violet;
         padding: -10%;
+        text-align: right;
     }
 </style>

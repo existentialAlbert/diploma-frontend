@@ -1,7 +1,5 @@
 <template>
     <div id="main">
-        <img src="../assets/ITIS_logo.jpg">
-
         <form>
             <label>
                 Username
@@ -52,9 +50,9 @@
         align-self: center;
         padding-right: 8%;
         padding-left: 8%;
-/*
-        background: aqua;
-*/
+        /*
+                background: aqua;
+        */
         width: 10%;
     }
 
