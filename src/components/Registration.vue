@@ -47,7 +47,7 @@
                 return this.approvanceOfPassword === this.password;
             },
             disp: function () {
-                return this.errorRow.length === 0? "yes" : "none";
+                return this.errorRow.length !== 0? "yes" : "none";
             }
         },
         methods: {
@@ -71,14 +71,10 @@
                                 break;
                             }
                             case 201: {
-                                localStorage.token = JSON.parse(req.responseText).token;
+                                localStorage.setItem("token", JSON.parse(req.responseText).token);
                                 window.location.replace("/progress");
                                 break;
                             }
-                            default:
-                        }
-                        if (req.status === 201) {
-                            alert(localStorage.token);
                         }
                     }
                 } else

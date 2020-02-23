@@ -1,14 +1,27 @@
 <template>
     <div id="main">
-        <form>
+        <div class="error_box" :style="{display: disp}">
+            <table>
+                <tr>
+                    <td>
+                        <ul>
+                            <li v-for="i of errorRow" v-bind:key="i">
+                                {{i}}
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <form onsubmit="return false;">
             <label>
                 Username
-                <input type="text" maxlength="25" :value="login">
+                <input type="text" maxlength="25" v-model="login">
             </label>
             <br>
             <label>
                 Password
-                <input type="password" maxlength="40" :value="password">
+                <input type="password" maxlength="40" v-model="password">
             </label>
             <button @click="logIn">Go learning!</button>
         </form>
@@ -23,6 +36,12 @@
             return {
                 login: "",
                 password: "",
+                errorRow: [],
+            }
+        },
+        computed:{
+            disp:function () {
+                return this.errorRow.length !== 0? "yes" : "none";
             }
         },
         methods:{
@@ -35,7 +54,11 @@
                 req.setRequestHeader('Access-Control-Allow-Headers', 'X-Requested-With');
                 req.send(JSON.stringify({"password": this.password, "username": this.login}));
                 req.onload = () => {
-
+                    if (req.status === 200){
+                        console.log(req.responseText);
+                        localStorage.setItem("token", JSON.parse(req.responseText).token);
+                        window.location.replace("/progress");
+                    }
                 }
             }
         }
@@ -72,5 +95,10 @@
 
     a {
         color: #42b983;
+    }
+    .error_box {
+        background: orange;
+        margin-left: 25%;
+        margin-right: 25%;
     }
 </style>
