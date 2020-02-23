@@ -39,27 +39,36 @@
                 errorRow: [],
             }
         },
-        computed:{
-            disp:function () {
-                return this.errorRow.length !== 0? "yes" : "none";
+        computed: {
+            disp: function () {
+                return this.errorRow.length !== 0 ? "yes" : "none";
             }
         },
-        methods:{
+        methods: {
             logIn: function () {
-                let req = new XMLHttpRequest();
-                req.open("POST", "https://tierion-jvm-project.herokuapp.com/api/auth/login");
-                req.setRequestHeader('Authorization', 'Bearer');
-                req.setRequestHeader("Content-Type", 'application/json');
-                req.setRequestHeader('Access-Control-Allow-Origin', "*");
-                req.setRequestHeader('Access-Control-Allow-Headers', 'X-Requested-With');
-                req.send(JSON.stringify({"password": this.password, "username": this.login}));
-                req.onload = () => {
-                    if (req.status === 200){
-                        console.log(req.responseText);
-                        localStorage.setItem("token", JSON.parse(req.responseText).token);
+                const axios = require('axios').default;
+                axios({
+                        url: "https://tierion-jvm-project.herokuapp.com/api/auth/login",
+                        method: "POST",
+                        data: {
+                            "password": this.password,
+                            "username": this.login
+                        },
+                        headers: {
+                            'Authorization': 'Bearer',
+                            "Content-Type": 'application/json',
+                            'Accept': 'application/json',
+                            'Access-Control-Allow-Origin': "*",
+                            'Access-Control-Allow-Headers': 'X-Requested-With',
+                        }
+                    }
+                ).then((response) => {
+                    if (response.status === 200) {
+                        console.log(response.data);
+                        localStorage.setItem("token", response.data.token);
                         window.location.replace("/progress");
                     }
-                }
+                });
             }
         }
     }
@@ -96,6 +105,7 @@
     a {
         color: #42b983;
     }
+
     .error_box {
         background: orange;
         margin-left: 25%;

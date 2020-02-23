@@ -53,17 +53,25 @@
         methods: {
             registration: function () {
                 if (this.correct) {
-                    let req = new XMLHttpRequest();
-                    req.open("POST", "https://tierion-jvm-project.herokuapp.com/api/users");
-                    req.setRequestHeader('Authorization', 'Bearer');
-                    req.setRequestHeader("Content-Type", 'application/json');
-                    req.setRequestHeader('Access-Control-Allow-Origin', "*");
-                    req.setRequestHeader('Access-Control-Allow-Headers', 'X-Requested-With');
-                    req.send(JSON.stringify({"password": this.password, "username": this.login}));
-                    req.onload = () => {
-                        let errors = JSON.parse(req.responseText);
-                        console.log(errors);
-                        switch (req.status) {
+                    const axios = require('axios').default;
+                    axios({
+                            url: "https://tierion-jvm-project.herokuapp.com/api/users",
+                            method: "POST",
+                            data: {
+                                "password": this.password,
+                                "username": this.login
+                            },
+                            headers: {
+                                'Authorization': 'Bearer',
+                                "Content-Type": 'application/json',
+                                'Accept': 'application/json',
+                                'Access-Control-Allow-Origin': "*",
+                                'Access-Control-Allow-Headers': 'X-Requested-With',
+                            }
+                        }
+                    ).then((response) => {
+                        let errors = response.data;
+                        switch (response.status) {
                             case 200: {
                                 this.errorRow = [];
                                 for (let i of errors["errors"])
@@ -71,12 +79,12 @@
                                 break;
                             }
                             case 201: {
-                                localStorage.setItem("token", JSON.parse(req.responseText).token);
+                                localStorage.setItem("token", response.data.token);
                                 window.location.replace("/progress");
                                 break;
                             }
                         }
-                    }
+                    });
                 } else
                     this.errorRow.push("Пароли не совпадают!");
             }
