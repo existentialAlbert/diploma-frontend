@@ -6,7 +6,7 @@
                     <label>2</label>
                 </td>
                 <td>
-                    <a href="/personal-cab" v-if="false">Личный кабинет</a>
+                    <a href="/personal-cab" v-if="false">{{name}}</a>
                     <a href="/registration" v-else>Нет аккаунта? Зарегистрируйтесь!</a>
                 </td>
 
@@ -17,7 +17,21 @@
 
 <script>
     export default {
-        name: "Header"
+        name: "Header",
+        data: function () {
+            return {
+                name: undefined,
+            }
+        },
+        methods: {
+            beforeUpdate: function () {
+                const axios = require('axios').default;
+                axios({
+                    
+                }).then();
+                localStorage.getItem("token") !== undefined
+            }
+        }
     }
 </script>
 

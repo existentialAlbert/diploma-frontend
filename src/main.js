@@ -12,7 +12,11 @@ const routes = [
     {path: 'intro', component: Intro},
     {path: '/registration', component: Registration}
 ];
-
+const axios = require('axios').default;
+const token = localStorage.getItem('user-token');
+if (token) {
+    axios.defaults.headers.common['Authorization'] = token;
+}
 const router = new VueRouter({
     routes,
     mode: 'history'

@@ -1,5 +1,6 @@
 <template>
     <div>
+        {{disp}}
         <div class="error_box" :style="{display: disp}">
             <table>
                 <tr>
@@ -47,7 +48,7 @@
                 return this.approvanceOfPassword === this.password;
             },
             disp: function () {
-                return this.errorRow.length !== 0? "yes" : "none";
+                return this.errorRow.length !== 0 ? "" : "none";
             }
         },
         methods: {
@@ -70,20 +71,14 @@
                             }
                         }
                     ).then((response) => {
-                        let errors = response.data;
-                        switch (response.status) {
-                            case 400: {
-                                this.errorRow = [];
-                                for (let i of errors["errors"])
-                                    this.errorRow.push(i.message);
-                                break;
-                            }
-                            case 201: {
-                                localStorage.setItem("token", response.data.token);
-                                window.location.replace("/progress");
-                                break;
-                            }
-                        }
+                        localStorage.setItem("token", response.data.token);
+                        window.location.replace("/progress");
+                    }).catch((error) => {
+                        this.errorRow = [];
+                        console.log(error.response.data.errors[0]);
+                        for (let i of error.response.data.errors)
+                            this.errorRow.push(i.message);
+                        console.log(this.errorRow.length)
                     });
                 } else
                     this.errorRow.push("Пароли не совпадают!");
@@ -100,6 +95,7 @@
     div {
         background: white;
     }
+
     .error_box {
         background: orange;
         margin-left: 25%;
