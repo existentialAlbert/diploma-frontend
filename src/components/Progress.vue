@@ -1,10 +1,15 @@
 <template>
-    
+    <div>{{token}}</div>
 </template>
 
 <script>
     export default {
-        name: "Progress"
+        name: "Progress",
+        data: function () {
+            return {
+                token: localStorage.getItem("token"),
+            }
+        }
     }
 </script>
 
