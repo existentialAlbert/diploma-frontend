@@ -72,7 +72,7 @@
                     ).then((response) => {
                         let errors = response.data;
                         switch (response.status) {
-                            case 200: {
+                            case 400: {
                                 this.errorRow = [];
                                 for (let i of errors["errors"])
                                     this.errorRow.push(i.message);
