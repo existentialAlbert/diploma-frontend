@@ -66,7 +66,7 @@
                     if (response.status === 200) {
                         console.log(response.data);
                         localStorage.setItem("token", response.data.token);
-                        window.location.replace("/progress");
+                        window.location.replace("/personalcabinet");
                     }
                 });
             }

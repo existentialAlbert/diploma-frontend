@@ -6,7 +6,7 @@
                     <label>2</label>
                 </td>
                 <td>
-                    <a href="/personal-cab" v-if="false">{{name}}</a>
+                    <a style="color:white" href="/personalcabinet" v-if="localStorage.getItem('token')">{{name}}</a>
                     <a href="/registration" v-else>Нет аккаунта? Зарегистрируйтесь!</a>
                 </td>
 

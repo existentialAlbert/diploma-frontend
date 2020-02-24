@@ -1,6 +1,5 @@
 <template>
     <div>
-        {{disp}}
         <div class="error_box" :style="{display: disp}">
             <table>
                 <tr>
@@ -72,7 +71,7 @@
                         }
                     ).then((response) => {
                         localStorage.setItem("token", response.data.token);
-                        window.location.replace("/progress");
+                        window.location.replace("/personalcabinet");
                     }).catch((error) => {
                         this.errorRow = [];
                         if (error.response.data.status === undefined)
