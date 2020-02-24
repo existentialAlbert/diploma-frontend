@@ -25,11 +25,6 @@
         },
         methods: {
             beforeUpdate: function () {
-                const axios = require('axios').default;
-                axios({
-                    
-                }).then();
-                localStorage.getItem("token") !== undefined
             }
         }
     }

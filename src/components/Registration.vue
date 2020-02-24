@@ -75,9 +75,10 @@
                         window.location.replace("/progress");
                     }).catch((error) => {
                         this.errorRow = [];
-                        console.log(error.response.data.errors[0]);
-                        for (let i of error.response.data.errors)
-                            this.errorRow.push(i.message);
+                        if (error.response.data.status === undefined)
+                            for (let i of error.response.data.errors)
+                                this.errorRow.push(i.message);
+                            else this.errorRow.push(error.response.data.message);
                         console.log(this.errorRow.length)
                     });
                 } else
@@ -100,5 +101,6 @@
         background: orange;
         margin-left: 25%;
         margin-right: 25%;
+        color: #e44f00;
     }
 </style>
