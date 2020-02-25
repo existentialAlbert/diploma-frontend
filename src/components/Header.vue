@@ -3,11 +3,18 @@
         <table>
             <tr>
                 <td>
-                    <label>2</label>
+                    <label>
+
+                        <select>
+                            <option>
+
+                            </option>
+                        </select>
+                    </label>
                 </td>
                 <td>
-                    <a style="color:white" href="/personalcabinet" v-if="localStorage.getItem('token')">{{name}}</a>
-                    <a href="/registration" v-else>Нет аккаунта? Зарегистрируйтесь!</a>
+                    <a style="color:white" href="/personalcabinet" v-if="tokenized">{{name}}</a>
+                    <a href="/" v-else>Войдите</a>
                 </td>
 
             </tr>
@@ -20,12 +27,17 @@
         name: "Header",
         data: function () {
             return {
-                name: undefined,
+                name: "Albert",
             }
         },
         methods: {
             beforeUpdate: function () {
             }
+        },
+        computed:{
+          tokenized: function () {
+              return localStorage.getItem('token');
+          }
         }
     }
 </script>

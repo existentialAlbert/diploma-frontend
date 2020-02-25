@@ -15,16 +15,17 @@
         </div>
         <form onsubmit="return false;">
             <label>
-                Username
+                Юзернейм
                 <input type="text" maxlength="25" v-model="login">
             </label>
             <br>
             <label>
-                Password
+                Пароль
                 <input type="password" maxlength="40" v-model="password">
             </label>
-            <button @click="logIn">Go learning!</button>
+            <button @click="logIn">Начать учиться</button>
         </form>
+        <a href="/registration">Нет аккаунта? Зарегистрируйтесь!</a>
     </div>
 </template>
 
