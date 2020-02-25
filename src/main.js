@@ -15,7 +15,7 @@ const routes = [
     {path: '/personalcabinet', component: PersonalCabinet}
 ];
 const axios = require('axios').default;
-const token = localStorage.getItem('user-token');
+const token = localStorage.getItem('token');
 if (token) {
     axios.defaults.headers.common['Authorization'] = token;
 }

@@ -2,7 +2,6 @@
     <div>
         <table>
             <tr>
-<<<<<<< HEAD
                 <td>
                     <label>
 
@@ -16,11 +15,6 @@
                 <td>
                     <a style="color:white" href="/personalcabinet" v-if="tokenized">{{name}}</a>
                     <a href="/" v-else>Войдите</a>
-=======
-                <td align="right">
-                    <a style="color:white" href="/personalcabinet" v-if="tokenized">Альберт</a>
-                    <a href="/registration" v-else>Нет аккаунта? Зарегистрируйтесь!</a>
->>>>>>> master
                 </td>
             </tr>
         </table>
@@ -31,25 +25,21 @@
     export default {
         name: "Header",
         data: function () {
-            return {
-                name: "Albert",
+            return{
             }
         },
         computed: {
             tokenized: function () {
                 return localStorage.getItem("token");
+            },
+            name: function () {
+              return localStorage.getItem("name");
             }
         },
 
         methods: {
-            beforeUpdate: function () {
-            }
+
         },
-        computed:{
-          tokenized: function () {
-              return localStorage.getItem('token');
-          }
-        }
     }
 </script>
 

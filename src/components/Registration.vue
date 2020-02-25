@@ -78,7 +78,6 @@
                             for (let i of error.response.data.errors)
                                 this.errorRow.push(i.message);
                             else this.errorRow.push(error.response.data.message);
-                        console.log(this.errorRow.length)
                     });
                 } else
                     this.errorRow.push("Пароли не совпадают!");
