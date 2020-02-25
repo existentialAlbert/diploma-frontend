@@ -2,6 +2,7 @@
     <div>
         <table>
             <tr>
+<<<<<<< HEAD
                 <td>
                     <label>
 
@@ -15,8 +16,12 @@
                 <td>
                     <a style="color:white" href="/personalcabinet" v-if="tokenized">{{name}}</a>
                     <a href="/" v-else>Войдите</a>
+=======
+                <td align="right">
+                    <a style="color:white" href="/personalcabinet" v-if="tokenized">Альберт</a>
+                    <a href="/registration" v-else>Нет аккаунта? Зарегистрируйтесь!</a>
+>>>>>>> master
                 </td>
-
             </tr>
         </table>
     </div>
@@ -30,6 +35,12 @@
                 name: "Albert",
             }
         },
+        computed: {
+            tokenized: function () {
+                return localStorage.getItem("token");
+            }
+        },
+
         methods: {
             beforeUpdate: function () {
             }
@@ -45,7 +56,11 @@
 <style scoped>
     div {
         background: violet;
-        padding: -10%;
+        padding-top: 1%;
         text-align: right;
+    }
+
+    td {
+        alignment: right;
     }
 </style>
