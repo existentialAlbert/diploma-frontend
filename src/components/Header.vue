@@ -1,12 +1,13 @@
 <template>
-    <div v-bind:style="{display: tokenized}">
+    <div>
         <table>
             <tr>
-                <td>
-                    <div>
-                        <a style='color:white' href='' @click='this.$router.push("/user/{{name}}")'>{{name}}</a>
-                        <a href='' @click='exit'>Выйти</a>
-                    </div>
+                <td v-bind:style="{display: authorized}">
+                    <a style='color:white' href='' @click='this.$router.push("/user/{{name}}")'>{{name}}</a>
+                    <a href='/' @click='exit'>Выйти</a>
+                </td>
+                <td v-bind:style="{display: unauthorized}">
+                    <a href='/'>Войти</a>
                 </td>
             </tr>
         </table>
@@ -20,24 +21,32 @@
             return {
                 token: localStorage.getItem("token"),
                 name: localStorage.getItem("name"),
-                tokenized: this.token !== undefined ? "" : "none",
+                tokenized: localStorage.getItem("token") != undefined,
             }
+        },
+        computed: {
+            authorized: function () {
+                return this.tokenized ? "" : "none"
+            },
+            unauthorized: function () {
+                return this.tokenized ? "none" : "";
+            },
         },
         watch: {
             $route() {
                 this.token = localStorage.getItem("token");
                 this.name = localStorage.getItem("name");
-                this.tokenized = this.token !== undefined ? "" : "none";
-            }
+                this.tokenized = localStorage.getItem("token") != undefined;
+            },
         },
         methods: {
             exit: function () {
-                this.$router.push("/").then(() => {
-                    this.tokenized = "none";
+                this.$router.push("/", () => {
                     this.name = undefined;
                     this.token = undefined;
-                    localStorage.setItem("token", undefined);
-                    localStorage.setItem("name", undefined);
+                    this.tokenized = false;
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("name");
                 });
             },
         },

@@ -64,16 +64,15 @@
                         }
                     }
                 ).then((response) => {
-                    if (response.status === 200) {
-                        this.$router.push({path: `/user/${this.login}`}, () => {
-                            localStorage.setItem("token", response.data.token);
-                            localStorage.setItem("name", this.login);
-                        });
-                    }
+                        localStorage.setItem("token", response.data.token);
+                        localStorage.setItem("name", this.login);
+                        this.$router.push({path: `/user/${this.login}`});
                 }).catch((error) => {
                     this.errorRow = [];
-                    for (let i of error.response.data.errors)
-                        this.errorRow.push(i.message);
+                    if (error.response.data.status === undefined)
+                        for (let i of error.response.data.errors)
+                            this.errorRow.push(i.message);
+                    else this.errorRow.push(error.response.data.message);
                 });
             }
         }
@@ -116,5 +115,6 @@
         background: orange;
         margin-left: 25%;
         margin-right: 25%;
+        color: #e44f00;
     }
 </style>
