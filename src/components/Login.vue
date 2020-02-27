@@ -42,7 +42,7 @@
         },
         computed: {
             disp: function () {
-                return this.errorRow.length !== 0 ? "yes" : "none";
+                return this.errorRow.length !== 0 ? "" : "none";
             }
         },
         methods: {
@@ -65,11 +65,15 @@
                     }
                 ).then((response) => {
                     if (response.status === 200) {
-                        console.log(response.data);
-                        localStorage.setItem("token", response.data.token);
-                        localStorage.setItem("name", this.username);
-                        window.location.replace("/personalcabinet");
+                        this.$router.push({path: `/user/${this.login}`}, () => {
+                            localStorage.setItem("token", response.data.token);
+                            localStorage.setItem("name", this.login);
+                        });
                     }
+                }).catch((error) => {
+                    this.errorRow = [];
+                    for (let i of error.response.data.errors)
+                        this.errorRow.push(i.message);
                 });
             }
         }

@@ -10,14 +10,14 @@ Vue.use(VueRouter);
 
 const routes = [
     {path: '/', component: Login},
-    {path: 'intro', component: Intro},
+    {path: '/intro', component: Intro},
     {path: '/registration', component: Registration},
-    {path: '/personalcabinet', component: PersonalCabinet}
+    {path: '/user/:username', component: PersonalCabinet},
 ];
 const axios = require('axios').default;
 const token = localStorage.getItem('token');
 if (token) {
-    axios.defaults.headers.common['Authorization'] = token;
+    axios.defaults.headers.common['Authorization'] = "Bearer " + token;
 }
 const router = new VueRouter({
     routes,
@@ -25,6 +25,6 @@ const router = new VueRouter({
 });
 new Vue({
     render: h => h(App),
-    router
+    router,
 }).$mount('#app');
 

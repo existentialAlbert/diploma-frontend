@@ -1,20 +1,12 @@
 <template>
-    <div>
+    <div v-bind:style="{display: tokenized}">
         <table>
             <tr>
                 <td>
-                    <label>
-
-                        <select>
-                            <option>
-
-                            </option>
-                        </select>
-                    </label>
-                </td>
-                <td>
-                    <a style="color:white" href="/personalcabinet" v-if="tokenized">{{name}}</a>
-                    <a href="/" v-else>Войдите</a>
+                    <div>
+                        <a style='color:white' href='' @click='this.$router.push("/user/{{name}}")'>{{name}}</a>
+                        <a href='' @click='exit'>Выйти</a>
+                    </div>
                 </td>
             </tr>
         </table>
@@ -24,21 +16,30 @@
 <script>
     export default {
         name: "Header",
-        data: function () {
-            return{
+        data() {
+            return {
+                token: localStorage.getItem("token"),
+                name: localStorage.getItem("name"),
+                tokenized: this.token !== undefined ? "" : "none",
             }
         },
-        computed: {
-            tokenized: function () {
-                return localStorage.getItem("token");
-            },
-            name: function () {
-              return localStorage.getItem("name");
+        watch: {
+            $route() {
+                this.token = localStorage.getItem("token");
+                this.name = localStorage.getItem("name");
+                this.tokenized = this.token !== undefined ? "" : "none";
             }
         },
-
         methods: {
-
+            exit: function () {
+                this.$router.push("/").then(() => {
+                    this.tokenized = "none";
+                    this.name = undefined;
+                    this.token = undefined;
+                    localStorage.setItem("token", undefined);
+                    localStorage.setItem("name", undefined);
+                });
+            },
         },
     }
 </script>

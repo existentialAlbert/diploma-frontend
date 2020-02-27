@@ -33,7 +33,6 @@
 <script>
     export default {
         name: "Registration",
-        components: {},
         data: function () {
             return {
                 login: "",
@@ -71,7 +70,7 @@
                         }
                     ).then((response) => {
                         localStorage.setItem("token", response.data.token);
-                        window.location.replace("/personalcabinet");
+                        this.$router.push(`/user/${this.login}`);
                     }).catch((error) => {
                         this.errorRow = [];
                         if (error.response.data.status === undefined)
