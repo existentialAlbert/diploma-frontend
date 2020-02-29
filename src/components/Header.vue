@@ -45,10 +45,10 @@
                 });
             },
             personalCabinet: function () {
-                this.$router.push('/user/' + this.name);
+                this.$router.push('/users/user/' + localStorage.getItem("name"));
             },
             users: function () {
-                this.$router.push('/users')
+                this.$router.push('/users/0')
             }
         },
     }

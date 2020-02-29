@@ -66,7 +66,7 @@
                 ).then((response) => {
                         localStorage.setItem("token", response.data.token);
                         localStorage.setItem("name", this.login);
-                        this.$router.push({path: `/user/${this.login}`});
+                        this.$router.push({path: `/users/user/${this.login}`});
                 }).catch((error) => {
                     this.errorRow = [];
                     if (error.response.data.status === undefined)

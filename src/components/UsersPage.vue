@@ -9,29 +9,27 @@
 <script>
     export default {
         name: "UsersPage",
-        data: function(){
-          return {
-              pageNumber: 0,
-              usersPage: [],
-          }
+        data: function () {
+            return {
+                pageNumber: 0,
+                usersPage: [],
+            }
         },
-        beforeMount(){
-          this.getPage();
+        methods: {
+            getPage: function () {
+                const axios = require('axios').default;
+                axios({
+                    url: `https://tierion-jvm-project.herokuapp.com/api/users/page/${0}/size/10`,
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem("token"),
+                    }
+                }).then(response => {
+                    for (let i in response.data)
+                        this.usersPage.push(i.fio);
+                });
+            }
         },
-        methods:{
-          getPage: function () {
-              const axios = require('axios').default;
-              axios({
-                  url: `https://tierion-jvm-project.herokuapp.com/api/users/page/${0}/size/10`,
-                  headers: {
-                      "Authorization" : "Bearer " + localStorage.getItem("token"),
-                  }
-              }).then(response => {
-                  for (let i in response.data)
-                      this.usersPage.push(i.fio);
-              });
-          }
-        },
+
     }
 </script>
 

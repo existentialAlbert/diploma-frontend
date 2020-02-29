@@ -7,39 +7,48 @@
             Персональная информация
         </h2>
         <ul v-for="(name, index) in names" v-bind:key="name">
-            {{name}}: <InfoInput edit="false" v-bind:data="info[index+1]"></InfoInput>
+            {{name}}:
+            <template v-if="!editing">
+                <label v-if="info[index] != null"> {{info[index]}} </label>
+                <label v-else>Заполните это поле</label>
+                <br/>
+                <button v-if="allowed" @click="editing = true">Редактировать</button>
+            </template>
+            <template v-else>
+                <form @submit="submit" onsubmit="return false;">
+                    <label>
+                        <input v-bind:value="newData">
+                    </label>
+                </form>
+            </template>
         </ul>
         <button v-if="changed">Сохранить изменения</button>
     </div>
 </template>
 
 <script>
-    import InfoInput from "@/components/PersonalCabinet/InfoInput";
     export default {
         name: "PersonalCabinet",
-        components: {InfoInput},
         data() {
             return {
                 info: [],
                 changed: false,
-                names: ['Имя пользователя','Фамилия, имя и отчество',
+                editing: false,
+                names: ['Имя пользователя', 'Фамилия, имя и отчество',
                     'Почта', 'День рождения', 'Роль', 'Статус'],
             }
         },
-        beforeMount() {
-            this.getInfo();
+        computed: {
+            allowed() {
+                return this.$route.params.username === localStorage.getItem("name");
+            }
         },
-
         methods: {
-            getInfo: function () {
-                /*if (localStorage.getItem("info") != undefined) {
-                    this.info = localStorage.getItem("info");
-                    return;
-                }*/
+            getInfo: function (user = this.$route.params.username) {
                 this.info = [];
                 const axios = require('axios').default;
                 axios({
-                    url: `https://tierion-jvm-project.herokuapp.com/api/users/username/${this.$route.params.username}`,
+                    url: `https://tierion-jvm-project.herokuapp.com/api/users/username/${user}`,
                     method: "GET",
                     headers: {
                         "Content-Type": 'application/json',
@@ -47,15 +56,31 @@
                         "Authorization": "Bearer " + localStorage.getItem("token")
                     },
                 }).then(response => {
+                    let a = 0;
                     for (let i in response.data) {
+                        if (a > 0)
                         this.info.push(response.data[i]);
+                        /*console.log(i + " " + response.data[i])
+                        console.log(localStorage.getItem(i))*/
+                        a++;
                     }
-                    /*
-                                        localStorage.setItem("info", this.info);
-                    */
                 });
             }
         },
+        created() {
+            this.getInfo();
+        },
+        beforeRouteUpdate(to, from, next) {
+            this.getInfo(to.params.username);
+            next()
+            /*alert("b");
+            this.info.push(localStorage.getItem("username"), localStorage.getItem("fio"), localStorage.getItem("email"),
+                localStorage.getItem("birthday"), localStorage.getItem("role"), localStorage.getItem("status"));*/
+        }
+        ,
+        /* beforeRouteLeave(to, from, next){
+
+         }*/
     }
 </script>
 

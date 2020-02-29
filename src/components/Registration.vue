@@ -70,7 +70,7 @@
                         }
                     ).then((response) => {
                         localStorage.setItem("token", response.data.token);
-                        this.$router.push(`/user/${this.login}`);
+                        this.$router.push(`/users/user/${this.login}`);
                     }).catch((error) => {
                         this.errorRow = [];
                         if (error.response.data.status === undefined)
