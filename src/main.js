@@ -4,7 +4,7 @@ import VueRouter from 'vue-router'
 import Login from "@/components/Login";
 import UsersPage from "@/components/UsersPage";
 import Registration from "@/components/Registration";
-import PersonalCabinet from "@/components/PersonalCabinet/PersonalCabinet";
+import PersonalCabinet from "@/components/PersonalCabinet";
 
 Vue.use(VueRouter);
 

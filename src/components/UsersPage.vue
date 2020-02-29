@@ -1,8 +1,9 @@
 <template>
     <div>
-        <ul v-for="i in usersPage" v-bind:key="i">
-            <li> {{i}}</li>
-        </ul>
+        <a v-for="i in usersPage" href="" @click="sendToUser(i)" v-bind:key="i">
+            {{i}}
+            <br/>
+        </a>
     </div>
 </template>
 
@@ -19,17 +20,21 @@
             getPage: function () {
                 const axios = require('axios').default;
                 axios({
-                    url: `https://tierion-jvm-project.herokuapp.com/api/users/page/${0}/size/10`,
+                    url: `https://tierion-jvm-project.herokuapp.com/api/users/page/${this.pageNumber}/size/10`,
                     headers: {
                         "Authorization": "Bearer " + localStorage.getItem("token"),
                     }
                 }).then(response => {
                     for (let i in response.data)
-                        this.usersPage.push(i.fio);
+                        this.usersPage.push(response.data[i]["username"]);
                 });
+            },
+            sendToUser(i){
+                this.$router.push('/users/user/' + i);
             }
         },
-
+        mounted() {this.getPage();
+        }
     }
 </script>
 
