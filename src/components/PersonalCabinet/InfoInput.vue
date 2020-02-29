@@ -1,28 +1,27 @@
 <template>
     <div>
-        <ul v-for="(name, index) in names" v-bind:key="name">
-            <li v-if="editing">
-                <form onsubmit="return false;">
-                    <label>
-                        <input v-bind:value="i">
-                    </label>
-                </form>
-            </li>
-            <template v-else>
-                <li v-if="true">{{name}}: {{data[index+1]}}<button @click="editing = true">Редактировать</button></li>
-                <li v-else> Заполните это поле! <button @click="editing = true">Редактировать</button></li>
-            </template>
-        </ul>
+        <template v-if="!editing">
+            <label v-if="data != null"> {{data}} </label>
+            <label v-else>Заполните это поле</label>
+            <button @click="editing = true">Редактировать</button>
+        </template>
+        <template v-else>
+            <form onsubmit="return false;">
+                <label>
+                    <input v-bind:value="data">
+                </label>
+            </form>
+        </template>
     </div>
 </template>
 
 <script>
     export default {
         name: "InfoInput",
-        props: ["data", "names"],
+        props: ["data", "edit"],
         data() {
             return {
-                editing: false,
+                editing: this.edit,
             }
         },
         methods: {
@@ -37,7 +36,7 @@
 </script>
 
 <style scoped>
-li {
-    margin : auto;
-}
+    li {
+        margin: auto;
+    }
 </style>

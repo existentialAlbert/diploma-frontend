@@ -1,36 +1,41 @@
 <template>
     <div>
         <h1>
-            Ваша персональная информация
+            {{this.$route.params.username}}
         </h1>
-        <InfoInput v-bind:data="info" v-bind:names="['Имя пользователя','Фамилия, имя и отчество',
-            'Ваша почта', 'Ваш день рождения', 'Роль', 'Статус']"></InfoInput>
+        <h2>
+            Персональная информация
+        </h2>
+        <ul v-for="(name, index) in names" v-bind:key="name">
+            {{name}}: <InfoInput edit="false" v-bind:data="info[index+1]"></InfoInput>
+        </ul>
+        <button v-if="changed">Сохранить изменения</button>
     </div>
 </template>
 
 <script>
     import InfoInput from "@/components/PersonalCabinet/InfoInput";
-
     export default {
         name: "PersonalCabinet",
         components: {InfoInput},
         data() {
             return {
                 info: [],
+                changed: false,
+                names: ['Имя пользователя','Фамилия, имя и отчество',
+                    'Почта', 'День рождения', 'Роль', 'Статус'],
             }
         },
-        mounted() {
+        beforeMount() {
             this.getInfo();
         },
-        watch: {
-            $route() {
-                this.info = [];
-                this.getInfo();
-            },
 
-        },
         methods: {
             getInfo: function () {
+                /*if (localStorage.getItem("info") != undefined) {
+                    this.info = localStorage.getItem("info");
+                    return;
+                }*/
                 this.info = [];
                 const axios = require('axios').default;
                 axios({
@@ -42,8 +47,12 @@
                         "Authorization": "Bearer " + localStorage.getItem("token")
                     },
                 }).then(response => {
-                    for (let i in response.data)
+                    for (let i in response.data) {
                         this.info.push(response.data[i]);
+                    }
+                    /*
+                                        localStorage.setItem("info", this.info);
+                    */
                 });
             }
         },

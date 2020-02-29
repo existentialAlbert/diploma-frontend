@@ -1,12 +1,15 @@
 <template>
     <div>
+        {{token}}
         <table>
             <tr>
-                <td v-bind:style="{display: authorized}">
-                    <a style='color:white' href='' @click='this.$router.push("/user/{{name}}")'>{{name}}</a>
+                <td v-if="tokenized">
+                    <button @click="users">Посмотреть других юзеров</button>
+                    <a href="/tasks">Перейти к задачам</a>
+                    <button style='color:white' @click="personalCabinet">{{name}}</button>
                     <a href='/' @click='exit'>Выйти</a>
                 </td>
-                <td v-bind:style="{display: unauthorized}">
+                <td v-else>
                     <a href='/'>Войти</a>
                 </td>
             </tr>
@@ -23,14 +26,6 @@
                 name: localStorage.getItem("name"),
                 tokenized: localStorage.getItem("token") != undefined,
             }
-        },
-        computed: {
-            authorized: function () {
-                return this.tokenized ? "" : "none"
-            },
-            unauthorized: function () {
-                return this.tokenized ? "none" : "";
-            },
         },
         watch: {
             $route() {
@@ -49,6 +44,12 @@
                     localStorage.removeItem("name");
                 });
             },
+            personalCabinet: function () {
+                this.$router.push('/user/' + this.name);
+            },
+            users: function () {
+                this.$router.push('/users')
+            }
         },
     }
 </script>
