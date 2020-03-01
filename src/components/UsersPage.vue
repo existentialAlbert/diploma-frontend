@@ -4,6 +4,11 @@
             {{i}}
             <br/>
         </a>
+        <div>
+            <a>
+
+            </a>
+        </div>
     </div>
 </template>
 
@@ -21,6 +26,7 @@
                 const axios = require('axios').default;
                 axios({
                     url: `https://tierion-jvm-project.herokuapp.com/api/users/page/${this.pageNumber}/size/10`,
+                    method: "GET",
                     headers: {
                         "Authorization": "Bearer " + localStorage.getItem("token"),
                     }

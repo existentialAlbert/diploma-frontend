@@ -67,7 +67,7 @@
                 });
             }
         },
-        created() {
+        beforeMount() {
             this.getInfo();
         },
         beforeRouteUpdate(to, from, next) {
