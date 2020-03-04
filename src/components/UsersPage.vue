@@ -4,42 +4,52 @@
             {{i}}
             <br/>
         </a>
-        <div>
-            <a>
-
-            </a>
-        </div>
+        <Pagination size="1" v-bind:amount="10" url="/users/page/"></Pagination>
     </div>
 </template>
 
 <script>
+    import Pagination from "@/components/Pagination";
     export default {
         name: "UsersPage",
+        components: {Pagination},
         data: function () {
             return {
                 pageNumber: 0,
+                pages: 1,
                 usersPage: [],
             }
         },
         methods: {
-            getPage: function () {
-                const axios = require('axios').default;
-                axios({
-                    url: `https://tierion-jvm-project.herokuapp.com/api/users/page/${this.pageNumber}/size/10`,
-                    method: "GET",
-                    headers: {
-                        "Authorization": "Bearer " + localStorage.getItem("token"),
-                    }
-                }).then(response => {
-                    for (let i in response.data)
-                        this.usersPage.push(response.data[i]["username"]);
-                });
-            },
             sendToUser(i){
                 this.$router.push('/users/user/' + i);
             }
         },
-        mounted() {this.getPage();
+        beforeRouteUpdate() {
+            const axios = require('axios').default;
+            axios({
+                url: `https://tierion-jvm-project.herokuapp.com/api/users/page/${this.$route.params.page}/size/2`,
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("token"),
+                }
+            }).then(response => {
+                this.usersPage = [];
+                for (let i in response.data)
+                    this.usersPage.push(response.data[i]["username"]);
+            });
+        },
+        mounted() {
+            const axios = require('axios').default;
+            axios({
+                url: "https://tierion-jvm-project.herokuapp.com/api/users/count",
+                method: "GET",
+                headers:{
+                    "Authorization" : "Bearer " + localStorage.getItem("token")
+                }
+            }).then(response =>{
+                this.pages = response.data.count;
+            });
         }
     }
 </script>
