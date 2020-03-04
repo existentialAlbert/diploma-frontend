@@ -48,7 +48,7 @@
                 this.$router.push('/users/user/' + localStorage.getItem("name"));
             },
             users: function () {
-                this.$router.push('/users/0')
+                this.$router.push('/users/page/0')
             }
         },
     }
@@ -56,7 +56,7 @@
 
 <style scoped>
     div {
-        background: violet;
+        background: gray    ;
         padding-top: 1%;
         text-align: right;
     }

@@ -12,7 +12,7 @@ const routes = [
     {path: '/', component: Login},
     {path: '/registration', component: Registration},
     {path: '/users/user/:username', component: PersonalCabinet},
-    {path: '/users/:page', component: UsersPage},
+    {path: '/users/page/:page', component: UsersPage},
 ];
 const axios = require('axios').default;
 const token = localStorage.getItem('token');

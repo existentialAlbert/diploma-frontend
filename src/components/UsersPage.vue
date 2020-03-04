@@ -4,42 +4,56 @@
             {{i}}
             <br/>
         </a>
-        <div>
-            <a>
-
-            </a>
-        </div>
+        <Pagination size="1" v-bind:amount="10" url="/users/page/"></Pagination>
     </div>
 </template>
 
 <script>
+    import Pagination from "@/components/Pagination";
+
     export default {
         name: "UsersPage",
+        components: {Pagination},
         data: function () {
             return {
-                pageNumber: 0,
+                pageNumber: this.$route.params.page,
+                pages: 1,
                 usersPage: [],
             }
         },
         methods: {
-            getPage: function () {
+            sendToUser(i) {
+                this.$router.push('/users/user/' + i);
+            },
+            refresh() {
                 const axios = require('axios').default;
                 axios({
-                    url: `https://tierion-jvm-project.herokuapp.com/api/users/page/${this.pageNumber}/size/10`,
+                    url: `https://tierion-jvm-project.herokuapp.com/api/users/page/${this.$route.params.page}/size/2`,
                     method: "GET",
                     headers: {
                         "Authorization": "Bearer " + localStorage.getItem("token"),
                     }
                 }).then(response => {
+                    this.usersPage = [];
                     for (let i in response.data)
                         this.usersPage.push(response.data[i]["username"]);
                 });
-            },
-            sendToUser(i){
-                this.$router.push('/users/user/' + i);
+                axios({
+                    url: "https://tierion-jvm-project.herokuapp.com/api/users/count",
+                    method: "GET",
+                    headers: {
+                        "Authorization": "Bearer " + localStorage.getItem("token")
+                    }
+                }).then(response => {
+                    this.pages = response.data.count;
+                });
             }
         },
-        mounted() {this.getPage();
+        beforeRouteUpdate() {
+            this.refresh()
+        },
+        created() {
+            this.refresh();
         }
     }
 </script>
