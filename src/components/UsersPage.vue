@@ -4,7 +4,7 @@
             {{i}}
             <br/>
         </a>
-        <Pagination size="1" v-bind:amount="10" url="/users/page/"></Pagination>
+        <Pagination v-bind:amount="10" url="/users/page/"></Pagination>
     </div>
 </template>
 
@@ -16,8 +16,8 @@
         components: {Pagination},
         data: function () {
             return {
-                pageNumber: this.$route.params.page,
-                pages: 1,
+                pageNumber: Number(this.$route.params.page),
+                pages: 10,
                 usersPage: [],
             }
         },
@@ -37,6 +37,8 @@
                     this.usersPage = [];
                     for (let i in response.data)
                         this.usersPage.push(response.data[i]["username"]);
+                }).catch(error => {
+                    console.log(error)
                 });
                 axios({
                     url: "https://tierion-jvm-project.herokuapp.com/api/users/count",
@@ -46,11 +48,13 @@
                     }
                 }).then(response => {
                     this.pages = response.data.count;
+                }).catch(error => {
+                    console.log(error)
                 });
             }
         },
         beforeRouteUpdate() {
-            this.refresh()
+            this.refresh();
         },
         created() {
             this.refresh();

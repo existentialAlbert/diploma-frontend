@@ -41,15 +41,15 @@
 <script>
     export default {
         name: "Pagination",
-        props: ["amount", "url", "size"],
+        props: ["amount", "url"],
         data: function () {
             return {
                 currentPage: Number(this.$route.params.page),
             }
         },
         watch: {
-            currentPage(val) {
-                this.$router.push({path: this.url + "" + val});
+            currentPage() {
+                this.$router.push({path: this.url + "" + this.currentPage});
             },
         }
     }
