@@ -4,8 +4,8 @@
         <table>
             <tr>
                 <td v-if="tokenized">
-                    <button @click="users">Посмотреть других юзеров</button>
-                    <a href="/tasks">Перейти к задачам</a>
+                    <a href="/users/page/0">Посмотреть других юзеров</a>
+                    <a href="/tasks/page/0">Перейти к задачам</a>
                     <button style='color:white' @click="personalCabinet">{{name}}</button>
                     <a href='/' @click='exit'>Выйти</a>
                 </td>

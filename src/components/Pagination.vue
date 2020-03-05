@@ -49,8 +49,6 @@
         },
         watch: {
             currentPage(val) {
-                console.log(val)
-
                 this.$router.push({path: this.url + "" + val});
             },
         },
