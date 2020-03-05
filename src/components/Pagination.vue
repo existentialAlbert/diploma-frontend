@@ -48,9 +48,15 @@
             }
         },
         watch: {
-            currentPage() {
-                this.$router.push({path: this.url + "" + this.currentPage});
+            currentPage(val) {
+                alert(this.url + val)
+                this.push();
             },
+        },
+        methods:{
+            push: function () {
+                this.$router.push({path: this.url + "" + this.currentPage})
+            }
         }
     }
 </script>

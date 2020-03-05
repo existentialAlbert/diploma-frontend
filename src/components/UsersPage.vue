@@ -18,6 +18,7 @@
             return {
                 pageNumber: Number(this.$route.params.page),
                 pages: 10,
+                users: 0,
                 usersPage: [],
             }
         },
@@ -47,16 +48,18 @@
                         "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 }).then(response => {
-                    this.pages = response.data.count;
+                    this.users = response.data.count;
                 }).catch(error => {
                     console.log(error)
                 });
             }
         },
-        beforeRouteUpdate() {
-            this.refresh();
-        },
+
         created() {
+            this.refresh();
+            alert("b")
+        },
+        mounted() {
             this.refresh();
         }
     }
