@@ -2,17 +2,17 @@
     <table>
         <tr>
             <td v-if="currentPage > 2">
-                <a @click="currentPage--">
+                <a href="" @click="currentPage--">
                     Назад
                 </a>
             </td>
             <td v-if="currentPage > 1">
-                <a @click="currentPage-=2">
+                <a href="" @click="currentPage-=2">
                     {{currentPage - 2}}
                 </a>
             </td>
             <td v-if="currentPage > 0">
-                <a @click="currentPage--">
+                <a href="" @click="currentPage--">
                     {{currentPage - 1}}
                 </a>
             </td>
@@ -20,12 +20,12 @@
                 <label style="color:yellow">{{currentPage}}</label>
             </td>
             <td v-if="amount - currentPage > 0">
-                <a @click="currentPage++">
-                    {{1 +currentPage}}
+                <a href="" @click="currentPage++">
+                    {{1 + currentPage}}
                 </a>
             </td>
             <td v-if="amount - currentPage > 1">
-                <a @click="currentPage += 2">
+                <a href="" @click="currentPage += 2">
                     {{currentPage+2}}
                 </a>
             </td>
@@ -48,10 +48,12 @@
             }
         },
         watch: {
-            currentPage() {
-                this.$router.push({path: this.url + "" + this.currentPage});
+            currentPage(val) {
+                console.log(val)
+
+                this.$router.push({path: this.url + "" + val});
             },
-        }
+        },
     }
 </script>
 

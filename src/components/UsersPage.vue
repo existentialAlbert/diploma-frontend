@@ -4,7 +4,7 @@
             {{i}}
             <br/>
         </a>
-        <Pagination v-bind:amount="10" url="/users/page/"></Pagination>
+        <Pagination v-bind:amount="pages - 1" url="/users/page/"></Pagination>
     </div>
 </template>
 
@@ -17,9 +17,15 @@
         data: function () {
             return {
                 pageNumber: Number(this.$route.params.page),
-                pages: 10,
+                users: 0,
+                usersOnOnePage: 2,
                 usersPage: [],
             }
+        },
+        computed:{
+          pages(){
+              return Math.ceil(this.users/this.usersOnOnePage);
+          }
         },
         methods: {
             sendToUser(i) {
@@ -47,18 +53,20 @@
                         "Authorization": "Bearer " + localStorage.getItem("token")
                     }
                 }).then(response => {
-                    this.pages = response.data.count;
+                    this.users = response.data.count;
                 }).catch(error => {
                     console.log(error)
                 });
             }
         },
-        beforeRouteUpdate() {
+        /*beforeRouteUpdate(to, from, next){
             this.refresh();
-        },
+            alert("b")
+            next();
+        },*/
         created() {
             this.refresh();
-        }
+        },
     }
 </script>
 
