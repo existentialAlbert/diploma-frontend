@@ -17,7 +17,12 @@
 <script>
     export default {
         name: "ErrorBox",
-        props: ["errors", "isActive"]
+        props: ["errors"],
+        computed:{
+            isActive(){
+                return this.errors.length !== 0;
+            }
+        }
 
     }
 </script>

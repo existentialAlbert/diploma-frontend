@@ -3,6 +3,7 @@
         <h1>
             {{this.$route.params.username}}
         </h1>
+        <ErrorBox v-bind:errors="errorRow"></ErrorBox>
         <h2>
             Персональная информация
         </h2>
@@ -30,8 +31,11 @@
 </template>
 
 <script>
+    import ErrorBox from "@/components/ErrorBox";
+
     export default {
         name: "PersonalCabinet",
+        components: {ErrorBox},
         data() {
             return {
                 info: {
@@ -83,7 +87,7 @@
                     data: {
                         "id": this.info.id,
                         "fio": this.newData.fio,
-                        "email": this.newData.email === ""? null : this.newData.email,
+                        "email": this.newData.email === "" ? null : this.newData.email,
                         "birthday": Date.parse(this.newData.birthday),
                         "password": this.newData.password === "" ? null : this.newData.password,
                         "role": localStorage.getItem("role"),
@@ -95,6 +99,9 @@
                     this.changed = false;
                     for (let i in this.newData)
                         this.data[i] = this.newData[i];
+                }).catch(error => {
+                    for (let i of error.response.data.errors)
+                        this.errorRow.push(i.message);
                 });
             },
             getInfo: function (callback = () => {
@@ -112,6 +119,9 @@
                     for (let i in response.data)
                         this.info[i] = response.data[i];
                     callback();
+                }).catch(error => {
+                    for (let i of error.response.data.errors)
+                        this.errorRow.push(i.message);
                 });
             }
         },
@@ -120,19 +130,6 @@
         },
         created() {
             this.getInfo();
-            /*const axios = require('axios').default;
-            axios({
-                url: `https://tierion-jvm-project.herokuapp.com/api/users/username/${this.$route.params.username}`,
-                method: "GET",
-                headers: {
-                    "Content-Type": 'application/json',
-                    'Accept': 'application/json',
-                    "Authorization": "Bearer " + localStorage.getItem("token"),
-                },
-            }).then(response => {
-                for (let i in response.data)
-                    this.info[i] = response.data[i];
-            });*/
         }
     }
 </script>

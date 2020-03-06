@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>Регистрация</h1>
-        <ErrorBox v-bind:is-active="errorRow.length !== 0" v-bind:errors="errorRow"></ErrorBox>
+        <ErrorBox v-bind:errors="errorRow"></ErrorBox>
         <form onsubmit="return false;">
             <label>
                 Введите свой никнейм:<br/>

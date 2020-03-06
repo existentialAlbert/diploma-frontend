@@ -1,6 +1,6 @@
 <template>
     <div id="main">
-        <ErrorBox v-bind:errors="errorRow" v-bind:is-active="errorRow.length !== 0"></ErrorBox>
+        <ErrorBox v-bind:errors="errorRow"></ErrorBox>
         <form onsubmit="return false;">
             <label>
                 Юзернейм
