@@ -1,18 +1,6 @@
 <template>
     <div id="main">
-        <div class="error_box" :style="{display: disp}">
-            <table>
-                <tr>
-                    <td>
-                        <ul>
-                            <li v-for="i of errorRow" v-bind:key="i">
-                                {{i}}
-                            </li>
-                        </ul>
-                    </td>
-                </tr>
-            </table>
-        </div>
+        <ErrorBox v-bind:errors="errorRow" v-bind:is-active="errorRow.length !== 0"></ErrorBox>
         <form onsubmit="return false;">
             <label>
                 Юзернейм
@@ -30,19 +18,17 @@
 </template>
 
 <script>
+    import ErrorBox from "@/components/ErrorBox";
+
     export default {
         name: 'Registration',
+        components: {ErrorBox},
         props: {},
         data() {
             return {
                 login: "",
                 password: "",
                 errorRow: [],
-            }
-        },
-        computed: {
-            disp: function () {
-                return this.errorRow.length !== 0 ? "" : "none";
             }
         },
         methods: {
@@ -64,9 +50,9 @@
                         }
                     }
                 ).then((response) => {
-                        localStorage.setItem("token", response.data.token);
-                        localStorage.setItem("name", this.login);
-                        this.$router.push({path: `/users/user/${this.login}`});
+                    localStorage.setItem("token", response.data.token);
+                    localStorage.setItem("name", this.login);
+                    this.$router.push({path: `/users/user/${this.login}`});
                 }).catch((error) => {
                     this.errorRow = [];
                     if (error.response.data.status === undefined)
@@ -111,10 +97,5 @@
         color: #42b983;
     }
 
-    .error_box {
-        background: orange;
-        margin-left: 25%;
-        margin-right: 25%;
-        color: #e44f00;
-    }
+
 </style>

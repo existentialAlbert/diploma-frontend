@@ -1,18 +1,7 @@
 <template>
     <div>
-        <div class="error_box" :style="{display: disp}">
-            <table>
-                <tr>
-                    <td>
-                        <ul>
-                            <li v-for="i of errorRow" v-bind:key="i">
-                                {{i}}
-                            </li>
-                        </ul>
-                    </td>
-                </tr>
-            </table>
-        </div>
+        <h1>Регистрация</h1>
+        <ErrorBox v-bind:is-active="errorRow.length !== 0" v-bind:errors="errorRow"></ErrorBox>
         <form onsubmit="return false;">
             <label>
                 Введите свой никнейм:<br/>
@@ -31,8 +20,11 @@
     </div>
 </template>
 <script>
+    import ErrorBox from "@/components/ErrorBox";
+
     export default {
         name: "Registration",
+        components: {ErrorBox},
         data: function () {
             return {
                 login: "",
@@ -45,9 +37,6 @@
             correct: function () {
                 return this.approvanceOfPassword === this.password;
             },
-            disp: function () {
-                return this.errorRow.length !== 0 ? "" : "none";
-            }
         },
         methods: {
             registration: function () {
@@ -76,7 +65,7 @@
                         if (error.response.data.status === undefined)
                             for (let i of error.response.data.errors)
                                 this.errorRow.push(i.message);
-                            else this.errorRow.push(error.response.data.message);
+                        else this.errorRow.push(error.response.data.message);
                     });
                 } else
                     this.errorRow.push("Пароли не совпадают!");
@@ -88,16 +77,5 @@
 <style scoped>
     * {
         margin: auto;
-    }
-
-    div {
-        background: white;
-    }
-
-    .error_box {
-        background: orange;
-        margin-left: 25%;
-        margin-right: 25%;
-        color: #e44f00;
     }
 </style>

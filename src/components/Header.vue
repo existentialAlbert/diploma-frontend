@@ -1,6 +1,5 @@
 <template>
     <div>
-        {{token}}
         <table>
             <tr>
                 <td v-if="tokenized">
