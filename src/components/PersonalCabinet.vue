@@ -8,16 +8,17 @@
             Персональная информация
         </h2>
         <ul v-for="(value, key) in names" v-bind:key="key">
-            {{value}}:
             <template v-if="!editing">
-                <label v-if="info[key] != null"> {{info[key]}} </label>
-                <label v-else>Заполните это поле</label>
-                <br/>
+                <label v-if="info[key] != null && key !== 'password'"> {{value}}: {{info[key]}}<br/> </label>
+                <label v-else-if="key!=='password'"> {{value}}: Заполните это поле<br/></label>
+
             </template>
             <template v-else>
                 <form @submit="updateInfo" onsubmit="return false;">
+                    {{value}}:
                     <label v-if="newData[key] !== undefined">
-                        <input v-if="key === 'birthday'" type="text" @input="validate" v-model="newData[key]" placeholder="mm/dd/yyyy">
+                        <input v-if="key === 'birthday'" type="text" @change="validate" v-model="newData[key]"
+                               placeholder="mm/dd/yyyy">
                         <input v-else type="text" @input="changed = true" v-model="newData[key]">
                     </label>
                     <label v-else> {{info[key]}} </label>
@@ -43,7 +44,7 @@
                 info: {
                     "username": "",
                     "fio": "",
-                    "password": "Кликните редактировать, чтобы изменить",
+                    "password": "",
                     "email": "",
                     "birthday": 0,
                     "role": "",
@@ -80,7 +81,6 @@
         methods: {
             updateInfo: function () {
                 if (this.errorRow.length === 0) {
-                    this.newData.birthday = this.secs;
                     const axios = require('axios').default;
                     axios({
                         url: `https://tierion-jvm-project.herokuapp.com/api/users/${this.info.id}`,
@@ -92,7 +92,7 @@
                             "id": this.info.id,
                             "fio": this.newData.fio,
                             "email": this.newData.email === "" ? null : this.newData.email,
-                            "birthday": this.newData.birthday,
+                            "birthday": this.secs,
                             "password": this.newData.password === "" ? null : this.newData.password,
                             "role": localStorage.getItem("role"),
                             "status": localStorage.getItem("status"),
@@ -101,13 +101,15 @@
                     }).then(() => {
                         this.editing = false;
                         this.changed = false;
-                        for (let i in this.newData)
-                            this.data[i] = this.newData[i];
+                        for (let i in this.newData) {
+                            this.info[i] = this.newData[i];
+                        }
                     }).catch(error => {
-                        if (error.response.data.status === undefined)
+                        /*if (error.response.data.status === undefined)
                             for (let i of error.response.data.errors)
                                 this.errorRow.push(i.message);
-                        else this.errorRow.push(error.response.data.message);
+                        else this.errorRow.push(error.response.data.message);*/
+                        console.log(error)
                     });
                 }
             },
@@ -128,7 +130,7 @@
                     this.errorRow.push("Неверный формат даты! Введите дату в формате mm/dd/yyyy.");
                     return;
                 }
-                this.secs = date.valueOf();
+                this.secs = date.valueOf() / 1000 + 10800;
                 this.errorRow = [];
             },
             getInfo: function (callback = () => {
@@ -144,7 +146,11 @@
                     },
                 }).then(response => {
                     for (let i in response.data)
-                        this.info[i] = response.data[i];
+                        if (i === "birthday") {
+                            let date = response.data[i].split("-");
+                            this.info[i] = date[1] + "/" + date[2] + "/" + date[0];
+                        } else
+                            this.info[i] = response.data[i];
                     callback();
                 }).catch(error => {
                     for (let i of error.response.data.errors)
