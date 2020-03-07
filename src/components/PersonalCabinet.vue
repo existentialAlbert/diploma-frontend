@@ -9,21 +9,23 @@
         </h2>
         <ul v-for="(value, key) in names" v-bind:key="key">
             <template v-if="!editing">
-                <label v-if="info[key] != null && key !== 'password'"> {{value}}: {{info[key]}}<br/> </label>
-                <label v-else-if="key!=='password'"> {{value}}: Заполните это поле<br/></label>
-
+                <template v-if="key !== 'password'">
+                    {{value}}:
+                    <label v-if="info[key] != null"> {{info[key]}} </label>
+                    <label v-else> заполните это поле</label>
+                    <br/>
+                </template>
             </template>
             <template v-else>
                 <form @submit="updateInfo" onsubmit="return false;">
                     {{value}}:
                     <label v-if="newData[key] !== undefined">
-                        <input v-if="key === 'birthday'" type="text" @change="validate" v-model="newData[key]"
+                        <input v-if="key === 'birthday'" type="text" @input="validate" v-model="newData[key]"
                                placeholder="mm/dd/yyyy">
                         <input v-else type="text" @input="changed = true" v-model="newData[key]">
                     </label>
                     <label v-else> {{info[key]}} </label>
                     <br/>
-
                 </form>
             </template>
         </ul>
@@ -105,11 +107,10 @@
                             this.info[i] = this.newData[i];
                         }
                     }).catch(error => {
-                        /*if (error.response.data.status === undefined)
+                        if (error.response.data.status === undefined)
                             for (let i of error.response.data.errors)
                                 this.errorRow.push(i.message);
-                        else this.errorRow.push(error.response.data.message);*/
-                        console.log(error)
+                        else this.errorRow.push(error.response.data.message);
                     });
                 }
             },
