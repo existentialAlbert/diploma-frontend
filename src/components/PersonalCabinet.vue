@@ -17,10 +17,12 @@
             <template v-else>
                 <form @submit="updateInfo" onsubmit="return false;">
                     <label v-if="newData[key] !== undefined">
-                        <input type="text" @input="changed = true" v-model="newData[key]">
-                        <br/>
+                        <input v-if="key === 'birthday'" type="text" @input="validate" v-model="newData[key]" placeholder="mm/dd/yyyy">
+                        <input v-else type="text" @input="changed = true" v-model="newData[key]">
                     </label>
                     <label v-else> {{info[key]}} </label>
+                    <br/>
+
                 </form>
             </template>
         </ul>
@@ -59,7 +61,7 @@
                     "role": 'Роль',
                     "status": 'Статус'
                 },
-
+                secs: 0,
             }
         },
         computed: {
@@ -77,32 +79,57 @@
         },
         methods: {
             updateInfo: function () {
-                const axios = require('axios').default;
-                axios({
-                    url: `https://tierion-jvm-project.herokuapp.com/api/users/${this.info.id}`,
-                    method: "PUT",
-                    headers: {
-                        "Authorization": "Bearer " + localStorage.getItem("token"),
-                    },
-                    data: {
-                        "id": this.info.id,
-                        "fio": this.newData.fio,
-                        "email": this.newData.email === "" ? null : this.newData.email,
-                        "birthday": Date.parse(this.newData.birthday),
-                        "password": this.newData.password === "" ? null : this.newData.password,
-                        "role": localStorage.getItem("role"),
-                        "status": localStorage.getItem("status"),
-                        "username": localStorage.getItem("username"),
-                    }
-                }).then(() => {
-                    this.editing = false;
-                    this.changed = false;
-                    for (let i in this.newData)
-                        this.data[i] = this.newData[i];
-                }).catch(error => {
-                    for (let i of error.response.data.errors)
-                        this.errorRow.push(i.message);
-                });
+                if (this.errorRow.length === 0) {
+                    this.newData.birthday = this.secs;
+                    const axios = require('axios').default;
+                    axios({
+                        url: `https://tierion-jvm-project.herokuapp.com/api/users/${this.info.id}`,
+                        method: "PUT",
+                        headers: {
+                            "Authorization": "Bearer " + localStorage.getItem("token"),
+                        },
+                        data: {
+                            "id": this.info.id,
+                            "fio": this.newData.fio,
+                            "email": this.newData.email === "" ? null : this.newData.email,
+                            "birthday": this.newData.birthday,
+                            "password": this.newData.password === "" ? null : this.newData.password,
+                            "role": localStorage.getItem("role"),
+                            "status": localStorage.getItem("status"),
+                            "username": localStorage.getItem("username"),
+                        }
+                    }).then(() => {
+                        this.editing = false;
+                        this.changed = false;
+                        for (let i in this.newData)
+                            this.data[i] = this.newData[i];
+                    }).catch(error => {
+                        if (error.response.data.status === undefined)
+                            for (let i of error.response.data.errors)
+                                this.errorRow.push(i.message);
+                        else this.errorRow.push(error.response.data.message);
+                    });
+                }
+            },
+            validate() {
+                this.errorRow = [];
+                this.changed = true;
+                let str = this.newData.birthday.split("/");
+                if (str.length < 3 || Number(str[0]) > 12) {
+                    this.errorRow.push("Неверный формат даты! Введите дату в формате mm/dd/yyyy.");
+                    return;
+                }
+                if (Number(str[2]) < 1920 || Number(str[2]) > 2015) {
+                    this.errorRow.push("Некорректный год рождения!");
+                    return;
+                }
+                let date = new Date(this.newData.birthday);
+                if (date.toDateString() === "Invalid Date") {
+                    this.errorRow.push("Неверный формат даты! Введите дату в формате mm/dd/yyyy.");
+                    return;
+                }
+                this.secs = date.valueOf();
+                this.errorRow = [];
             },
             getInfo: function (callback = () => {
             }) {
