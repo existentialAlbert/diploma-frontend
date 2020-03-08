@@ -1,9 +1,14 @@
 <template>
     <div>
-        <a v-for="(i, index) in tasksPage" href="" @click="sendToTask(index)" v-bind:key="i">
-            {{i}}
-            <br/>
-        </a>
+        <h1>Задачи</h1>
+
+            <a v-for="(task) in tasksPage" href="" @click="sendToTask(task.id)" v-bind:key="task">
+                <label>{{task.index}}: {{task.name}}
+                <br/>
+                </label>
+            </a>
+
+
         <Pagination v-bind:amount="pages - 1" url="/tasks/page/"></Pagination>
     </div>
 </template>
@@ -17,6 +22,7 @@
         data() {
             return {
                 tasksPage: [],
+                taskTypes: [],
                 pages: 0,
             }
         },
@@ -32,8 +38,12 @@
                 method: "GET",
             }).then(response => {
                 for (let i in response.data) {
-                    let index = 1 + Number(i) + 10 * Number(this.$route.params.page);
-                    this.tasksPage.push(index + ". " + response.data[i].name.substr())
+                    let index = response.data[i].id + 10 * Number(this.$route.params.page);
+                    this.tasksPage.push({
+                        name: response.data[i].name,
+                        index: index,
+                    });
+                    this.taskTypes.push(response.data[i].type);
                 }
             })
         },
