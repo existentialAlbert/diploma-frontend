@@ -48,7 +48,7 @@
                     "fio": "",
                     "password": "",
                     "email": "",
-                    "birthday": 0,
+                    "birthday": "",
                     "role": "",
                     "status": "",
                 },
@@ -143,15 +143,16 @@
                     headers: {
                         "Content-Type": 'application/json',
                         'Accept': 'application/json',
-                        "Authorization": "Bearer " + localStorage.getItem("token")
+                        "Authorization": "Bearer " + localStorage.getItem("token"),
                     },
                 }).then(response => {
                     for (let i in response.data)
-                        if (i === "birthday") {
+                        if (i === "birthday" && response.data[i] != null) {
                             let date = response.data[i].split("-");
                             this.info[i] = date[1] + "/" + date[2] + "/" + date[0];
-                        } else
-                            this.info[i] = response.data[i];
+                        } else{                            this.info[i] = response.data[i];
+                        console.log(response.data[i] + " " + i)
+                        }
                     callback();
                 }).catch(error => {
                     for (let i of error.response.data.errors)

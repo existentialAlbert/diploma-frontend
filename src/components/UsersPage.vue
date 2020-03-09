@@ -18,7 +18,7 @@
             return {
                 pageNumber: Number(this.$route.params.page),
                 users: 0,
-                usersOnOnePage: 2,
+                usersOnOnePage: 10,
                 usersPage: [],
             }
         },
@@ -34,7 +34,7 @@
             refresh() {
                 const axios = require('axios').default;
                 axios({
-                    url: `https://tierion-jvm-project.herokuapp.com/api/users/page/${this.$route.params.page}/size/2`,
+                    url: `https://tierion-jvm-project.herokuapp.com/api/users/page/${this.$route.params.page}/size/10`,
                     method: "GET",
                     headers: {
                         "Authorization": "Bearer " + localStorage.getItem("token"),
@@ -59,11 +59,6 @@
                 });
             }
         },
-        /*beforeRouteUpdate(to, from, next){
-            this.refresh();
-            alert("b")
-            next();
-        },*/
         created() {
             this.refresh();
         },

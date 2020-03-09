@@ -22,6 +22,8 @@
 <script>
     import ErrorBox from "@/components/ErrorBox";
 
+    const axios = require('axios').default;
+
     export default {
         name: "Registration",
         components: {ErrorBox},
@@ -41,7 +43,6 @@
         methods: {
             registration: function () {
                 if (this.correct) {
-                    const axios = require('axios').default;
                     axios({
                             url: "https://tierion-jvm-project.herokuapp.com/api/users",
                             method: "POST",
@@ -57,9 +58,8 @@
                                 'Access-Control-Allow-Headers': 'X-Requested-With',
                             }
                         }
-                    ).then((response) => {
-                        localStorage.setItem("token", response.data.token);
-                        this.$router.push(`/users/user/${this.login}`);
+                    ).then(() => {
+                        this.$router.push("/");
                     }).catch((error) => {
                         this.errorRow = [];
                         if (error.response.data.status === undefined)
