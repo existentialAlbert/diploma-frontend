@@ -10,7 +10,7 @@
 
 <script>
     import Pagination from "@/components/Pagination";
-
+    const axios = require('axios').default;
     export default {
         name: "UsersPage",
         components: {Pagination},
@@ -32,7 +32,6 @@
                 this.$router.push('/users/user/' + i);
             },
             refresh() {
-                const axios = require('axios').default;
                 axios({
                     url: `https://tierion-jvm-project.herokuapp.com/api/users/page/${this.$route.params.page}/size/10`,
                     method: "GET",

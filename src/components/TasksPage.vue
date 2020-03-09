@@ -7,12 +7,14 @@
                 </label>
             </a>
         <Pagination v-bind:amount="pages - 1" url="/tasks/page/"></Pagination>
+        <button @click="solveRandomTask">Решить рандомный таск</button>
+        <label v-if="visible">Вы уже решили все таски. Поздравляем!</label>
     </div>
 </template>
 
 <script>
     import Pagination from "@/components/Pagination";
-
+    const axios = require("axios").default;
     export default {
         name: "TasksPage",
         components: {Pagination},
@@ -21,15 +23,22 @@
                 tasksPage: [],
                 taskTypes: [],
                 pages: 0,
+                visible: false,
             }
         },
         methods: {
             sendToTask(taskId) {
                 this.$router.push("/tasks/task/" + taskId)
-            }
+            },
+            solveRandomTask(){
+                axios({
+                    url: "https://tierion-jvm-project.herokuapp.com/api/tasks/unsolved",
+                }).then(response => {
+                    this.sendToTask(response.data.id);
+                }).catch();
+            },
         },
         created() {
-            const axios = require("axios").default;
             axios({
                 url: `https://tierion-jvm-project.herokuapp.com/api/tasks/page/${this.$route.params.page}/size/10`,
                 method: "GET",
