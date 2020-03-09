@@ -22,9 +22,7 @@
             </table>
             <button v-if="!checked && !isEmpty">Проверить</button>
             <template v-if="checked">
-                <div>
-                    {{statistics}}
-                </div>
+                <Statistics v-bind:id="this.$route.params.task_id" type="task"></Statistics>
                 <article>
                     <h2>Пояснение</h2>
                     {{answerExplaination}}
@@ -35,9 +33,11 @@
 </template>
 
 <script>
+    import Statistics from "@/components/Statistics";
     const axios = require('axios').default;
     export default {
         name: "Task",
+        components: {Statistics},
         data: function () {
             return {
                 taskInfo: {},
@@ -69,18 +69,10 @@
                     }
                 }).then(() => {
                     this.checked = true;
-                    this.getStatistics()
+                    this.getStatistics();
                 });
                 return false;
             },
-            getStatistics() {
-                axios({
-                    url: "https://tierion-jvm-project.herokuapp.com/api/task-interactions/task/stats/" + this.$route.params.task_id,
-                }).then(response => {
-                    this.statistics = "Правильных ответов: " + response.data.correctAnswerCount +
-                        "\n" + "Всего ответов: " + response.data.answerCount;
-                });
-            }
         },
         created() {
             axios({

@@ -32,15 +32,21 @@
         <button v-if="changed && editing" @click="updateInfo" type="submit">Сохранить изменения</button>
         <button v-if="!editing && allowed" @click="editing = true">Редактировать</button>
         <button v-if="editing" @click="editing = false">Отменить</button>
+        <div>
+            <h2>Статистика по заданиям</h2>
+            <Statistics type="user" v-bind:id="this.info.id"></Statistics>
+            {{info.id}}
+        </div>
     </div>
 </template>
 
 <script>
     import ErrorBox from "@/components/ErrorBox";
+    import Statistics from "@/components/Statistics";
 
     export default {
         name: "PersonalCabinet",
-        components: {ErrorBox},
+        components: {Statistics, ErrorBox},
         data() {
             return {
                 info: {
@@ -51,6 +57,7 @@
                     "birthday": "",
                     "role": "",
                     "status": "",
+                    "id": null,
                 },
                 changed: false,
                 editing: false,
@@ -150,8 +157,9 @@
                         if (i === "birthday" && response.data[i] != null) {
                             let date = response.data[i].split("-");
                             this.info[i] = date[1] + "/" + date[2] + "/" + date[0];
-                        } else{                            this.info[i] = response.data[i];
-                        console.log(response.data[i] + " " + i)
+                        } else {
+                            this.info[i] = response.data[i];
+                            console.log(response.data[i] + " " + i)
                         }
                     callback();
                 }).catch(error => {
