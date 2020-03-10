@@ -1,11 +1,14 @@
 <template>
     <div>
         <h1>Задачи</h1>
-            <a v-for="(task) in tasksPage" href="" @click="sendToTask(task.id)" v-bind:key="task">
+        <div v-for="(tasksGroup, value) in tasksPage" v-bind:key="tasksGroup">
+            <h3>{{value}}</h3>
+            <a v-for="(task) in tasksGroup" href="" @click="sendToTask(task.id)" v-bind:key="task">
                 <label>{{task.id}}: {{task.name}}
-                <br/>
+                    <br/>
                 </label>
             </a>
+        </div>
         <Pagination v-bind:amount="pages - 1" url="/tasks/page/"></Pagination>
         <button @click="solveRandomTask">Решить рандомный таск</button>
         <label v-if="visible">Вы уже решили все таски. Поздравляем!</label>
@@ -20,8 +23,7 @@
         components: {Pagination},
         data() {
             return {
-                tasksPage: [],
-                taskTypes: [],
+                tasksPage: {},
                 pages: 0,
                 visible: false,
             }
@@ -30,12 +32,12 @@
             sendToTask(taskId) {
                 this.$router.push("/tasks/task/" + taskId)
             },
-            solveRandomTask(){
+            solveRandomTask() {
                 axios({
                     url: "https://tierion-jvm-project.herokuapp.com/api/tasks/unsolved",
                 }).then(response => {
                     this.sendToTask(response.data.id);
-                }).catch();
+                }).catch(() => this.visible = true);
             },
         },
         created() {
@@ -43,13 +45,14 @@
                 url: `https://tierion-jvm-project.herokuapp.com/api/tasks/page/${this.$route.params.page}/size/10`,
                 method: "GET",
             }).then(response => {
+                let types = {};
                 for (let i in response.data) {
-                    this.tasksPage.push({
-                        name: response.data[i].name,
-                        id: response.data[i].id,
-                    });
-                    this.taskTypes.push(response.data[i].type);
+                    if (types[response.data[i].type.caption] === undefined)
+                        types[response.data[i].type.caption] = [];
+                    types[response.data[i].type.caption].push(response.data[i]);
+                    console.log(types[response.data[i].type.caption] + " " + response.data[i].type.caption);
                 }
+                this.tasksPage = types;
             })
         },
     }
