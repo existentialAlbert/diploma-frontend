@@ -8,7 +8,6 @@
                 {{i}}
                 <br/>
             </label>
-            {{taskInfo.correctAnswer}}
         </article>
         <form onsubmit="return false" @submit="check">
             <table align="center">
@@ -34,7 +33,7 @@
 </template>
 
 <script>
-    import Statistics from "@/components/Statistics";
+    import Statistics from "@/components/auxiliaries/Statistics";
 
     const axios = require('axios').default;
     export default {

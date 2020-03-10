@@ -13,7 +13,7 @@
 </template>
 
 <script>
-    import Pagination from "@/components/Pagination";
+    import Pagination from "@/components/auxiliaries/Pagination";
     const axios = require("axios").default;
     export default {
         name: "TasksPage",

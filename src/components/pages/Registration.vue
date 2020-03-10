@@ -16,11 +16,10 @@
                 <button @click="registration">Создать аккаунт</button>
             </label>
         </form>
-        <label>{{password}}</label>
     </div>
 </template>
 <script>
-    import ErrorBox from "@/components/ErrorBox";
+    import ErrorBox from "@/components/auxiliaries/ErrorBox";
 
     const axios = require('axios').default;
 

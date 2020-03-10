@@ -18,7 +18,7 @@
 </template>
 
 <script>
-    import ErrorBox from "@/components/ErrorBox";
+    import ErrorBox from "@/components/auxiliaries/ErrorBox";
 
     export default {
         name: 'Registration',

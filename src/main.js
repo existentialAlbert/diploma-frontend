@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import App from './App.vue'
 import VueRouter from 'vue-router'
-import Login from "@/components/Login";
-import UsersPage from "@/components/UsersPage";
-import Registration from "@/components/Registration";
-import PersonalCabinet from "@/components/PersonalCabinet";
-import TasksPage from "@/components/TasksPage";
-import Task from "@/components/Task";
+import Login from "@/components/pages/Login";
+import UsersPage from "@/components/pages/UsersPage";
+import Registration from "@/components/pages/Registration";
+import PersonalCabinet from "@/components/pages/PersonalCabinet";
+import TasksPage from "@/components/pages/TasksPage";
+import Task from "@/components/pages/Task";
 
 Vue.use(VueRouter);
 

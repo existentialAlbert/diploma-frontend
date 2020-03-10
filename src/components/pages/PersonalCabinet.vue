@@ -35,14 +35,13 @@
         <div>
             <h2>Статистика по заданиям</h2>
             <Statistics type="user"></Statistics>
-            {{info.id}}
         </div>
     </div>
 </template>
 
 <script>
-    import ErrorBox from "@/components/ErrorBox";
-    import Statistics from "@/components/Statistics";
+    import ErrorBox from "@/components/auxiliaries/ErrorBox";
+    import Statistics from "@/components/auxiliaries/Statistics";
 
     export default {
         name: "PersonalCabinet",

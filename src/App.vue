@@ -10,7 +10,7 @@
     import Header from "@/components/Header"
     import Intro from "@/components/Intro"
 */
-import Header from "@/components/Header.vue";
+import Header from "@/components/auxiliaries/Header.vue";
 export default {
         name: 'App',
         components: {
