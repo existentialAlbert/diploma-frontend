@@ -1,5 +1,6 @@
 <template>
     <div>
+
         <h1>{{taskInfo.name}}</h1>
         <article>
             <h2>Задание</h2>
@@ -34,6 +35,7 @@
 
 <script>
     import Statistics from "@/components/Statistics";
+
     const axios = require('axios').default;
     export default {
         name: "Task",
@@ -67,10 +69,7 @@
                         "Authorization": "Bearer " + localStorage.getItem("token"),
                         "Content-Type": "application/json"
                     }
-                }).then(() => {
-                    this.checked = true;
-                    this.getStatistics();
-                });
+                }).then(() => this.checked = true);
                 return false;
             },
         },
@@ -90,7 +89,7 @@
                 this.taskInfo.correctAnswer = response.data.correctAnswer;
                 this.colour = this.userAnswer === this.taskInfo.correctAnswer ? "2px solid lime" : "2px solid red";
                 this.checked = true;
-                this.getStatistics();
+                localStorage.setItem("id", this.$route.params.task_id);
             }).catch();
         },
     }

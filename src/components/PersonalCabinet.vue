@@ -34,7 +34,7 @@
         <button v-if="editing" @click="editing = false">Отменить</button>
         <div>
             <h2>Статистика по заданиям</h2>
-            <Statistics type="user" v-bind:id="this.info.id"></Statistics>
+            <Statistics type="user"></Statistics>
             {{info.id}}
         </div>
     </div>
@@ -110,9 +110,8 @@
                     }).then(() => {
                         this.editing = false;
                         this.changed = false;
-                        for (let i in this.newData) {
+                        for (let i in this.newData)
                             this.info[i] = this.newData[i];
-                        }
                     }).catch(error => {
                         if (error.response.data.status === undefined)
                             for (let i of error.response.data.errors)
@@ -153,14 +152,12 @@
                         "Authorization": "Bearer " + localStorage.getItem("token"),
                     },
                 }).then(response => {
-                    for (let i in response.data)
-                        if (i === "birthday" && response.data[i] != null) {
-                            let date = response.data[i].split("-");
-                            this.info[i] = date[1] + "/" + date[2] + "/" + date[0];
-                        } else {
-                            this.info[i] = response.data[i];
-                            console.log(response.data[i] + " " + i)
-                        }
+                    this.info = response.data;
+                    localStorage.setItem("id", this.info.id);
+                    if (response.data.birthday != null) {
+                        let date = response.data.birthday.split("-");
+                        this.info.birthday = date[1] + "/" + date[2] + "/" + date[0];
+                    }
                     callback();
                 }).catch(error => {
                     for (let i of error.response.data.errors)

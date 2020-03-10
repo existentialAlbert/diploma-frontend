@@ -9,7 +9,7 @@
 <script>
     export default {
         name: "Statistics",
-        props: ["type", "id"],
+        props: ["type"],
         data() {
             return {
                 answerCount: 0,
@@ -19,7 +19,7 @@
         created() {
             const axios = require("axios").default;
             axios({
-                url: `https://tierion-jvm-project.herokuapp.com/api/task-interactions/${this.type}/stats/` + this.id,
+                url: `https://tierion-jvm-project.herokuapp.com/api/task-interactions/${this.type}/stats/` + localStorage.getItem("id"),
             }).then(response =>{
                 this.answerCount = response.data.answerCount;
                 this.correctAnswersCount = response.data.correctAnswerCount;
