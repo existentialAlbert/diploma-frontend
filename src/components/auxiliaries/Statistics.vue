@@ -18,9 +18,7 @@
         },
         created() {
             const axios = require("axios").default;
-            axios({
-                url: `https://tierion-jvm-project.herokuapp.com/api/task-interactions/${this.type}/stats/` + localStorage.getItem("id"),
-            }).then(response =>{
+            axios(`task-interactions/${this.type}/stats/` + localStorage.getItem("id")).then(response =>{
                 this.answerCount = response.data.answerCount;
                 this.correctAnswersCount = response.data.correctAnswerCount;
             })

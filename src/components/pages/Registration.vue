@@ -11,7 +11,7 @@
                 <input type="password" v-model="password" maxlength="40">
                 <br/>
                 Введите пароль еще раз:<br/>
-                <input type="password" v-model="approvanceOfPassword" maxlength="40">
+                <input type="password" v-model="approval" maxlength="40">
                 <br/>
                 <button @click="registration">Создать аккаунт</button>
             </label>
@@ -30,36 +30,29 @@
             return {
                 login: "",
                 password: "",
-                approvanceOfPassword: "",
+                approval: "",
                 errorRow: [],
             }
         },
         computed: {
             correct: function () {
-                return this.approvanceOfPassword === this.password;
+                return this.approval === this.password;
             },
         },
         methods: {
             registration: function () {
                 if (this.correct) {
                     axios({
-                            url: "https://tierion-jvm-project.herokuapp.com/api/users",
+                            url: "users",
                             method: "POST",
                             data: {
                                 "password": this.password,
                                 "username": this.login
-                            },
-                            headers: {
-                                'Authorization': 'Bearer',
-                                "Content-Type": 'application/json',
-                                'Accept': 'application/json',
-                                'Access-Control-Allow-Origin': "*",
-                                'Access-Control-Allow-Headers': 'X-Requested-With',
                             }
                         }
-                    ).then(() => {
-                        this.$router.push("/");
-                    }).catch((error) => {
+                    ).then(() =>
+                        this.$router.push("/")
+                    ).catch((error) => {
                         this.errorRow = [];
                         if (error.response.data.status === undefined)
                             for (let i of error.response.data.errors)

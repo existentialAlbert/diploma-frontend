@@ -17,6 +17,7 @@
 
 <script>
     import Pagination from "@/components/auxiliaries/Pagination";
+
     const axios = require("axios").default;
     export default {
         name: "TasksPage",
@@ -33,18 +34,16 @@
                 this.$router.push("/tasks/task/" + taskId)
             },
             solveRandomTask() {
-                axios({
-                    url: "https://tierion-jvm-project.herokuapp.com/api/tasks/unsolved",
-                }).then(response => {
+                axios("tasks/unsolved").then(response => {
                     this.sendToTask(response.data.id);
-                }).catch(() => this.visible = true);
+                }).catch(error => {
+                    if (error.data.status == 400)
+                        this.visible = true;
+                });
             },
         },
         created() {
-            axios({
-                url: `https://tierion-jvm-project.herokuapp.com/api/tasks/page/${this.$route.params.page}/size/10`,
-                method: "GET",
-            }).then(response => {
+            axios(`tasks/page/${this.$route.params.page}/size/10`).then(response => {
                 let types = {};
                 for (let i in response.data) {
                     if (types[response.data[i].type.caption] === undefined)

@@ -9,7 +9,6 @@ import TasksPage from "@/components/pages/TasksPage";
 import Task from "@/components/pages/Task";
 
 Vue.use(VueRouter);
-
 const routes = [
     {path: '/', component: Login},
     {path: '/registration', component: Registration},
@@ -20,8 +19,12 @@ const routes = [
 ];
 const axios = require('axios').default;
 const token = localStorage.getItem('token');
+axios.defaults.headers.common['Authorization'] = "Bearer";
 if (token)
-    axios.defaults.headers.common['Authorization'] = "Bearer " + token;
+    axios.defaults.headers.common['Authorization'] += " " +  token;
+
+axios.defaults.headers.common['Content-Type'] = "application/json";
+axios.defaults.baseURL = "https://tierion-jvm-project.herokuapp.com/api/";
 const router = new VueRouter({
     routes,
     mode: 'history'

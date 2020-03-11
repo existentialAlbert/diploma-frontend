@@ -1,13 +1,12 @@
 <template>
     <div>
-
         <h1>{{taskInfo.name}}</h1>
         <article>
             <h2>Задание</h2>
-            <label v-for="i in taskInfo.text_array" v-bind:key="i">
-                {{i}}
-                <br/>
-            </label>
+            {{text.description}}
+            <pre><code>
+                {{text.code}}
+            </code></pre>
         </article>
         <form onsubmit="return false" @submit="check">
             <table align="center">
@@ -25,7 +24,7 @@
                 <Statistics v-bind:id="this.$route.params.task_id" type="task"></Statistics>
                 <article>
                     <h2>Пояснение</h2>
-                    {{answerExplaination}}
+                    {{text.explanation}}
                 </article>
             </template>
         </form>
@@ -34,7 +33,9 @@
 
 <script>
     import Statistics from "@/components/auxiliaries/Statistics";
+    import hljs from "highlight.js";
 
+    hljs.initHighlightingOnLoad();
     const axios = require('axios').default;
     export default {
         name: "Task",
@@ -45,8 +46,7 @@
                 userAnswer: "",
                 colour: "",
                 checked: false,
-                statistics: "",
-                answerExplaination: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum",
+                text: {},
             }
         },
         computed: {
@@ -58,37 +58,29 @@
             check() {
                 this.colour = this.userAnswer === this.taskInfo.correctAnswer ? "2px solid lime" : "2px solid red";
                 axios({
-                    url: `https://tierion-jvm-project.herokuapp.com/api/task-interactions/`,
+                    url: `task-interactions`,
                     method: "POST",
                     data: {
                         "answer": this.userAnswer,
                         "taskId": String(this.$route.params.task_id),
                     },
-                    headers: {
-                        "Authorization": "Bearer " + localStorage.getItem("token"),
-                        "Content-Type": "application/json"
-                    }
                 }).then(() => this.checked = true);
                 return false;
             },
         },
         created() {
-            axios({
-                url: `https://tierion-jvm-project.herokuapp.com/api/tasks/${this.$route.params.task_id}`,
-                method: "GET",
-            }).then(response => {
+            axios(`tasks/${this.$route.params.task_id}`).then(response => {
                 this.taskInfo = response.data;
-                this.taskInfo.text_array = response.data.text.split("\n");
+                let arr = response.data.text.split("<code>");
+                this.text.description = arr[0];
+                this.text.code = arr[1].replace("</code>", "");
+                this.text.explanation = response.data.explanation;
             });
-            axios({
-                url: `https://tierion-jvm-project.herokuapp.com/api/task-interactions/task/${this.$route.params.task_id}`,
-                method: "GET",
-            }).then(response => {
+            axios(`task-interactions/task/${this.$route.params.task_id}`).then(response => {
                 this.userAnswer = response.data.userAnswer;
                 this.taskInfo.correctAnswer = response.data.correctAnswer;
                 this.colour = this.userAnswer === this.taskInfo.correctAnswer ? "2px solid lime" : "2px solid red";
                 this.checked = true;
-                localStorage.setItem("id", this.$route.params.task_id);
             }).catch();
         },
     }

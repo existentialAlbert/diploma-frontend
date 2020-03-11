@@ -43,6 +43,7 @@
     import ErrorBox from "@/components/auxiliaries/ErrorBox";
     import Statistics from "@/components/auxiliaries/Statistics";
 
+    const axios = require('axios').default;
     export default {
         name: "PersonalCabinet",
         components: {Statistics, ErrorBox},
@@ -89,13 +90,9 @@
         methods: {
             updateInfo: function () {
                 if (this.errorRow.length === 0) {
-                    const axios = require('axios').default;
                     axios({
-                        url: `https://tierion-jvm-project.herokuapp.com/api/users/${this.info.id}`,
+                        url: `users/${this.info.id}`,
                         method: "PUT",
-                        headers: {
-                            "Authorization": "Bearer " + localStorage.getItem("token"),
-                        },
                         data: {
                             "id": this.info.id,
                             "fio": this.newData.fio,
@@ -141,16 +138,8 @@
             },
             getInfo: function (callback = () => {
             }) {
-                const axios = require('axios').default;
-                axios({
-                    url: `https://tierion-jvm-project.herokuapp.com/api/users/username/${this.$route.params.username}`,
-                    method: "GET",
-                    headers: {
-                        "Content-Type": 'application/json',
-                        'Accept': 'application/json',
-                        "Authorization": "Bearer " + localStorage.getItem("token"),
-                    },
-                }).then(response => {
+                axios.defaults.headers["Authorization"] = "Bearer " + localStorage.getItem("token");
+                axios.get(`users/username/${this.$route.params.username}`).then(response => {
                     this.info = response.data;
                     localStorage.setItem("id", this.info.id);
                     if (response.data.birthday != null) {

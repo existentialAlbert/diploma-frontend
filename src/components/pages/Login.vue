@@ -35,19 +35,12 @@
             logIn: function () {
                 const axios = require('axios').default;
                 axios({
-                        url: "https://tierion-jvm-project.herokuapp.com/api/auth/login",
+                        url: "auth/login",
                         method: "POST",
                         data: {
                             "password": this.password,
                             "username": this.login
                         },
-                        headers: {
-                            'Authorization': 'Bearer',
-                            "Content-Type": 'application/json',
-                            'Accept': 'application/json',
-                            'Access-Control-Allow-Origin': "*",
-                            'Access-Control-Allow-Headers': 'X-Requested-With',
-                        }
                     }
                 ).then((response) => {
                     localStorage.setItem("token", response.data.token);
