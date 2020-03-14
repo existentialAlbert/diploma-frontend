@@ -90,19 +90,15 @@
         methods: {
             updateInfo: function () {
                 if (this.errorRow.length === 0) {
-                    axios({
-                        url: `users/${this.info.id}`,
-                        method: "PUT",
-                        data: {
-                            "id": this.info.id,
-                            "fio": this.newData.fio,
-                            "email": this.newData.email === "" ? null : this.newData.email,
-                            "birthday": this.secs,
-                            "password": this.newData.password === "" ? null : this.newData.password,
-                            "role": localStorage.getItem("role"),
-                            "status": localStorage.getItem("status"),
-                            "username": localStorage.getItem("username"),
-                        }
+                    axios.put(`users/${this.info.id}`, {
+                        "id": this.info.id,
+                        "fio": this.newData.fio,
+                        "email": this.newData.email === "" ? null : this.newData.email,
+                        "birthday": this.secs,
+                        "password": this.newData.password === "" ? null : this.newData.password,
+                        "role": localStorage.getItem("role"),
+                        "status": localStorage.getItem("status"),
+                        "username": localStorage.getItem("username")
                     }).then(() => {
                         this.editing = false;
                         this.changed = false;
@@ -139,7 +135,7 @@
             getInfo: function (callback = () => {
             }) {
                 axios.defaults.headers["Authorization"] = "Bearer " + localStorage.getItem("token");
-                axios.get(`users/username/${this.$route.params.username}`).then(response => {
+                axios(`users/username/${this.$route.params.username}`).then(response => {
                     this.info = response.data;
                     localStorage.setItem("id", this.info.id);
                     if (response.data.birthday != null) {

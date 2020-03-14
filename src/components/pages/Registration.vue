@@ -20,7 +20,6 @@
 </template>
 <script>
     import ErrorBox from "@/components/auxiliaries/ErrorBox";
-
     const axios = require('axios').default;
 
     export default {
@@ -41,16 +40,11 @@
         },
         methods: {
             registration: function () {
-                if (this.correct) {
-                    axios({
-                            url: "users",
-                            method: "POST",
-                            data: {
-                                "password": this.password,
-                                "username": this.login
-                            }
-                        }
-                    ).then(() =>
+                if (this.correct)
+                    axios.post("users", {
+                        "password": this.password,
+                        "username": this.login
+                    }).then(() =>
                         this.$router.push("/")
                     ).catch((error) => {
                         this.errorRow = [];
@@ -59,7 +53,7 @@
                                 this.errorRow.push(i.message);
                         else this.errorRow.push(error.response.data.message);
                     });
-                } else
+                else
                     this.errorRow.push("Пароли не совпадают!");
             }
         }

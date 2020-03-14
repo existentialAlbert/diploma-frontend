@@ -7,6 +7,7 @@
                     <a href="/users/page/0">Посмотреть других юзеров</a>
                     <a href="/tasks/page/0">Перейти к задачам</a>
                     <button style='color:white' @click="personalCabinet">{{name}}</button>
+                    <a href="" @click="$router.go(-1)">Назад</a>
                     <a href='/' @click='exit'>Выйти</a>
                 </td>
                 <td v-else>
@@ -47,16 +48,12 @@
             personalCabinet: function () {
                 this.$router.push('/users/user/' + localStorage.getItem("name"));
             },
-            users: function () {
-                this.$router.push('/users/page/0')
-            }
         },
     }
 </script>
-
 <style scoped>
     div {
-        background: gray    ;
+        background: gray;
         padding-top: 1%;
         text-align: right;
     }

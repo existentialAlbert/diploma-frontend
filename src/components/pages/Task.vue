@@ -4,7 +4,8 @@
         <article>
             <h2>Задание</h2>
             {{text.description}}
-            <pre><code>
+            <br/>
+            <pre><code id="code" >
                 {{text.code}}
             </code></pre>
         </article>
@@ -13,7 +14,7 @@
                 <tr>
                     <td v-bind:style="{}">
                         <label>Ваш ответ:<br/>
-                            <textarea cols="100" rows="15" v-model="userAnswer"
+                            <textarea cols="50" rows="15" v-model="userAnswer"
                                       style="width:560px;" v-bind:style="{border: colour}"> </textarea>
                         </label>
                     </td>
@@ -33,9 +34,10 @@
 
 <script>
     import Statistics from "@/components/auxiliaries/Statistics";
-    import hljs from "highlight.js";
+    import hljs from 'highlight.js/lib/highlight';
+    import java from 'highlight.js/lib/languages/java';
+    hljs.registerLanguage('java', java);
 
-    hljs.initHighlightingOnLoad();
     const axios = require('axios').default;
     export default {
         name: "Task",
@@ -57,13 +59,9 @@
         methods: {
             check() {
                 this.colour = this.userAnswer === this.taskInfo.correctAnswer ? "2px solid lime" : "2px solid red";
-                axios({
-                    url: `task-interactions`,
-                    method: "POST",
-                    data: {
-                        "answer": this.userAnswer,
-                        "taskId": String(this.$route.params.task_id),
-                    },
+                axios.post(`task-interactions`, {
+                    "answer": this.userAnswer,
+                    "taskId": String(this.$route.params.task_id),
                 }).then(() => this.checked = true);
                 return false;
             },
@@ -75,6 +73,10 @@
                 this.text.description = arr[0];
                 this.text.code = arr[1].replace("</code>", "");
                 this.text.explanation = response.data.explanation;
+                console.log(this.text.code);
+                //document.getElementById("code").innerHTML =
+                    hljs.highlight("java", this.template);
+
             });
             axios(`task-interactions/task/${this.$route.params.task_id}`).then(response => {
                 this.userAnswer = response.data.userAnswer;
@@ -84,6 +86,11 @@
             }).catch();
         },
     }
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightBlock(block);
+        });
+    });
 </script>
 
 <style scoped>

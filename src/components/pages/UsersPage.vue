@@ -37,12 +37,8 @@
                     this.usersPage = [];
                     for (let i in response.data)
                         this.usersPage.push(response.data[i]["username"]);
-                }).catch(error => {
-                    console.log(error)
                 });
-                axios("users/count").then(response => this.users = response.data.count).catch(error => {
-                    console.log(error)
-                });
+                axios("users/count").then(response => this.users = response.data.count);
             }
         },
         created() {

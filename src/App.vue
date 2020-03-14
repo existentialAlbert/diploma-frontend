@@ -15,16 +15,7 @@ export default {
         name: 'App',
         components: {
             Header
-
-       /*     Login,
-            Header,
-            Intro*/
         },
-    watch: {
-            Header: function () {
-                return this.Header;
-            }
-    }
     }
 </script>
 

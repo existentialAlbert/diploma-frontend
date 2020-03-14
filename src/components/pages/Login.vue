@@ -34,15 +34,10 @@
         methods: {
             logIn: function () {
                 const axios = require('axios').default;
-                axios({
-                        url: "auth/login",
-                        method: "POST",
-                        data: {
-                            "password": this.password,
-                            "username": this.login
-                        },
-                    }
-                ).then((response) => {
+                axios.post("auth/login", {
+                    "password": this.password,
+                    "username": this.login
+                }).then((response) => {
                     localStorage.setItem("token", response.data.token);
                     localStorage.setItem("name", this.login);
                     this.$router.push({path: `/users/user/${this.login}`});
