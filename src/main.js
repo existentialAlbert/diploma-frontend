@@ -1,6 +1,13 @@
 import Vue from 'vue'
+
+import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
+
 import App from './App.vue'
+
 import VueRouter from 'vue-router'
+
 import Login from "@/components/pages/Login";
 import UsersPage from "@/components/pages/UsersPage";
 import Registration from "@/components/pages/Registration";
@@ -11,6 +18,8 @@ import ExceptionsPage from "@/components/pages/ExceptionsPage";
 import Exception from "@/components/pages/Exception";
 
 Vue.use(VueRouter);
+Vue.use(BootstrapVue);
+Vue.use(IconsPlugin);
 const routes = [
     {path: '/', component: Login},
     {path: '/registration', component: Registration},

@@ -1,19 +1,26 @@
 <template>
     <div id="main">
         <ErrorBox v-bind:errors="errorRow"></ErrorBox>
-        <form onsubmit="return false;">
+        <br>
+        <h1>Вход в систему</h1>
+        <div class="container col-4">
+        <form class="form-control" onsubmit="return false;">
             <label>
-                Юзернейм
-                <input type="text" maxlength="25" v-model="login">
+                Имя пользователя
+                <br>
+                <input class="form-control" type="text" maxlength="25" v-model="login">
             </label>
             <br>
             <label>
                 Пароль
-                <input type="password" maxlength="40" v-model="password">
+                <br>
+                <input class="form-control" type="password" maxlength="40" v-model="password">
             </label>
-            <button @click="logIn">Начать учиться</button>
+            <br>
+            <button class="btn btn-outline-primary" @click="logIn">Войти</button>
+            <br/>
         </form>
-        <a href="/registration">Нет аккаунта? Зарегистрируйтесь!</a>
+        </div>
     </div>
 </template>
 
@@ -55,35 +62,5 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    * {
-        margin: auto;
-    }
-
-    img {
-        width: 50%;
-        padding-top: 0;
-        padding-left: 0;
-        padding-bottom: 2%;
-    }
-
-    #main {
-        padding-top: 0%;
-    }
-
-    form {
-        margin: auto;
-        align-self: center;
-        padding-right: 8%;
-        padding-left: 8%;
-        /*
-                background: aqua;
-        */
-        width: 10%;
-    }
-
-    a {
-        color: #42b983;
-    }
-
 
 </style>

@@ -1,16 +1,8 @@
 <template>
     <div v-if="isActive">
-        <table>
-            <tr>
-                <td>
-                    <ul>
-                        <li v-for="i of errors" v-bind:key="i">
-                            {{i}}
-                        </li>
-                    </ul>
-                </td>
-            </tr>
-        </table>
+        <div class="container alert alert-warning" role="alert">
+            <div v-for="i of errors" v-bind:key="i">{{i}}<br></div>
+        </div>
     </div>
 </template>
 
@@ -18,8 +10,8 @@
     export default {
         name: "ErrorBox",
         props: ["errors"],
-        computed:{
-            isActive(){
+        computed: {
+            isActive() {
                 return this.errors.length !== 0;
             }
         }
@@ -28,10 +20,4 @@
 </script>
 
 <style scoped>
-    div {
-        background: orange;
-        margin-left: 25%;
-        margin-right: 25%;
-        color: #e44f00;
-    }
 </style>
