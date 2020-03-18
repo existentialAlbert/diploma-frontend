@@ -142,6 +142,7 @@
                         let date = response.data.birthday.split("-");
                         this.info.birthday = date[1] + "/" + date[2] + "/" + date[0];
                     }
+                    localStorage.setItem("status", response.data.status);
                     callback();
                 }).catch(error => {
                     for (let i of error.response.data.errors)

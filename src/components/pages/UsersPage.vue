@@ -33,7 +33,7 @@
                 this.$router.push('/users/user/' + i);
             },
             refresh() {
-                axios(`users/page/${this.$route.params.page}/size/10`).then(response => {
+                axios(`users/page/${this.$route.params.page}/size/${this.usersOnOnePage}`).then(response => {
                     this.usersPage = [];
                     for (let i in response.data)
                         this.usersPage.push(response.data[i]["username"]);

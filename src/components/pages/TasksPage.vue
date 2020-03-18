@@ -26,8 +26,14 @@
         data() {
             return {
                 page: {},
-                pages: 0,
                 visible: false,
+                tasks: 8,
+                tasksOnOnePage: 10,
+            }
+        },
+        computed: {
+            pages() {
+                return Math.ceil(this.tasks / this.tasksOnOnePage);
             }
         },
         methods: {
@@ -42,7 +48,7 @@
             },
         },
         created() {
-            axios(`tasks/page/${this.$route.params.page}/size/10`).then(response => {
+            axios(`tasks/page/${this.$route.params.page}/size/${this.tasksOnOnePage}`).then(response => {
                 let types = {};
                 for (let i in response.data) {
                     let type = response.data[i].type.caption;

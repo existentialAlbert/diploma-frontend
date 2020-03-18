@@ -1,20 +1,35 @@
 <template>
     <div>
         {{token}}
-        <table>
-            <tr>
-                <td v-if="tokenized">
-                    <a href="/users/page/0">Посмотреть других юзеров</a>
-                    <a href="/tasks/page/0">Перейти к задачам</a>
-                    <button style='color:white' @click="personalCabinet">{{name}}</button>
-                    <a href="" @click="$router.go(-1)">Назад</a>
-                    <a href='/' @click='exit'>Выйти</a>
-                </td>
-                <td v-else>
-                    <a href='/'>Войти</a>
-                </td>
-            </tr>
-        </table>
+        <nav class="navbar">
+            <div class="container-fluid">
+                <ul class="nav navbar-nav" v-if="tokenized">
+                    <li class="active">
+                        <a href="/users/page/0">Посмотреть других юзеров</a>
+                    </li>
+                    <li class="active">
+                        <a href="/tasks/page/0">Перейти к задачам</a>
+                    </li>
+                    <li class="active">
+                        <a href="" @click="personalCabinet">{{name}}</a>
+                    </li>
+                    <li class="active">
+                        <a href="" @click="$router.go(-1)">Назад</a>
+                    </li>
+                    <li class="active">
+                        <a href='/' @click='exit'>Выйти</a>
+                    </li>
+                    <li v-if="isAdmin">
+                        <a href="/errors/page/0">Ошибки</a>
+                    </li>
+                </ul>
+                <ul v-else>
+                    <li class="active">
+                        <a href='/'>Войти</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
     </div>
 </template>
 
@@ -26,6 +41,7 @@
                 token: localStorage.getItem("token"),
                 name: localStorage.getItem("name"),
                 tokenized: localStorage.getItem("token") != undefined,
+                isAdmin: localStorage.getItem("status"),
             }
         },
         watch: {
@@ -33,6 +49,7 @@
                 this.token = localStorage.getItem("token");
                 this.name = localStorage.getItem("name");
                 this.tokenized = localStorage.getItem("token") != undefined;
+                this.isAdmin = localStorage.getItem("status") === "ADMIN";
             },
         },
         methods: {
@@ -53,12 +70,6 @@
 </script>
 <style scoped>
     div {
-        background: gray;
-        padding-top: 1%;
-        text-align: right;
-    }
-
-    td {
-        alignment: right;
+        background-color: grey;
     }
 </style>
