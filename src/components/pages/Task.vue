@@ -5,9 +5,7 @@
             <h2>Задание</h2>
             {{text.description}}
             <br/>
-            <pre><code id="code" >
-                {{text.code}}
-            </code></pre>
+            {{text.code}}
         </article>
         <form onsubmit="return false" @submit="check">
             <table align="center">
@@ -74,8 +72,6 @@
                 this.text.code = arr[1].replace("</code>", "");
                 this.text.explanation = response.data.explanation;
                 console.log(this.text.code);
-                //document.getElementById("code").innerHTML =
-                    hljs.highlight("java", this.template);
 
             });
             axios(`task-interactions/task/${this.$route.params.task_id}`).then(response => {
@@ -86,11 +82,6 @@
             }).catch();
         },
     }
-    document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('pre code').forEach((block) => {
-            hljs.highlightBlock(block);
-        });
-    });
 </script>
 
 <style scoped>

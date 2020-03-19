@@ -1,10 +1,12 @@
 <template>
     <div>
-        <a v-for="i in usersPage" href="" @click="sendToUser(i)" v-bind:key="i">
-            {{i}}
+        <h1>Пользователи</h1>
+        <a v-for="user in page" @click="sendToUser(user.username)" v-bind:key="user">
+            {{user.username}} - {{user.role}}
             <br/>
         </a>
         <Pagination v-bind:amount="pages - 1" url="/users/page/"></Pagination>
+
     </div>
 </template>
 
@@ -20,7 +22,7 @@
                 pageNumber: Number(this.$route.params.page),
                 users: 0,
                 usersOnOnePage: 10,
-                usersPage: [],
+                page: [],
             }
         },
         computed: {
@@ -32,14 +34,20 @@
             sendToUser(i) {
                 this.$router.push('/users/user/' + i);
             },
-            refresh() {
+            refresh(callback) {
                 axios(`users/page/${this.$route.params.page}/size/${this.usersOnOnePage}`).then(response => {
-                    this.usersPage = [];
+                    this.page = [];
                     for (let i in response.data)
-                        this.usersPage.push(response.data[i]["username"]);
+                        this.page.push(response.data[i]);
                 });
-                axios("users/count").then(response => this.users = response.data.count);
+                axios("users/count").then(response => {
+                    this.users = response.data.count;
+                    callback();
+                });
             }
+        },
+        beforeRouteUpdate(to, from, next) {
+            this.refresh(next());
         },
         created() {
             this.refresh();

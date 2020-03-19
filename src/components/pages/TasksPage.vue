@@ -1,16 +1,15 @@
 <template>
-    <div>
+    <div class="container">
         <h1>Задачи</h1>
         <div v-for="(tasksGroup, value) in page" v-bind:key="tasksGroup">
-            <h3>{{value}}</h3>
+            <h4>{{value}}</h4>
             <a v-for="(task) in tasksGroup" href="" @click="sendToTask(task.id)" v-bind:key="task">
-                <label>{{task.id}}: {{task.name}}
-                    <br/>
-                </label>
+                {{task.id}}: {{task.name}}
+                <br/>
             </a>
         </div>
-        <Pagination v-bind:amount="pages - 1" url="/tasks/page/"></Pagination>
-        <button @click="solveRandomTask">Решить рандомный таск</button>
+        <Pagination :amount="pages - 1" url="/tasks/page/"></Pagination>
+        <button class="btn btn-outline-secondary" @click="solveRandomTask">Решить рандомный таск</button>
         <label v-if="visible">Вы уже решили все таски!</label>
     </div>
 </template>
@@ -28,7 +27,7 @@
                 page: {},
                 visible: false,
                 tasks: 8,
-                tasksOnOnePage: 10,
+                tasksOnOnePage: 2,
             }
         },
         computed: {
@@ -46,18 +45,25 @@
                         this.visible = true;
                 });
             },
+            refresh(callback) {
+                axios(`tasks/page/${this.$route.params.page}/size/${this.tasksOnOnePage}`).then(response => {
+                    let types = {};
+                    for (let i in response.data) {
+                        let type = response.data[i].type.caption;
+                        if (types[type] === undefined)
+                            types[type] = [];
+                        types[type].push(response.data[i]);
+                    }
+                    this.page = types;
+                    callback();
+                });
+            }
+        },
+        beforeRouteUpdate(to, from, next) {
+            this.refresh(next());
         },
         created() {
-            axios(`tasks/page/${this.$route.params.page}/size/${this.tasksOnOnePage}`).then(response => {
-                let types = {};
-                for (let i in response.data) {
-                    let type = response.data[i].type.caption;
-                    if (types[type] === undefined)
-                        types[type] = [];
-                    types[type].push(response.data[i]);
-                }
-                this.page = types;
-            })
+            this.refresh();
         },
     }
 </script>

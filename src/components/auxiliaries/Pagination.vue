@@ -1,41 +1,42 @@
 <template>
-    <table>
-        <tr>
-            <td v-if="currentPage > 2">
-                <a href="" @click="currentPage--">
+    <nav>
+        <br>
+        <ul class="pagination justify-content-center">
+            <li class="page-item" v-if="currentPage > 2">
+                <a class="page-link" href="" @click="currentPage--">
                     Назад
                 </a>
-            </td>
-            <td v-if="currentPage > 1">
-                <a href="" @click="currentPage-=2">
+            </li>
+            <li class="page-item" v-if="currentPage > 1">
+                <a class="page-link" href="" @click="currentPage-=2">
                     {{currentPage - 2}}
                 </a>
-            </td>
-            <td v-if="currentPage > 0">
-                <a href="" @click="currentPage--">
+            </li>
+            <li class="page-item" v-if="currentPage > 0">
+                <a class="page-link" href="" @click="currentPage--">
                     {{currentPage - 1}}
                 </a>
-            </td>
-            <td>
-                <label style="color:yellow">{{currentPage}}</label>
-            </td>
-            <td v-if="amount - currentPage > 0">
-                <a href="" @click="currentPage++">
+            </li>
+            <li class="page-item-active">
+                <a class="page-link">{{currentPage}}</a>
+            </li>
+            <li class="page-item" v-if="amount - currentPage > 0">
+                <a class="page-link" href="" @click="currentPage++">
                     {{1 + currentPage}}
                 </a>
-            </td>
-            <td v-if="amount - currentPage > 1">
-                <a href="" @click="currentPage += 2">
+            </li>
+            <li class="page-item" v-if="amount - currentPage > 1">
+                <a class="page-link" href="" @click="currentPage += 2">
                     {{currentPage+2}}
                 </a>
-            </td>
-            <td v-if="amount - currentPage > 2">
-                <a href="" @click="currentPage++">
+            </li>
+            <li class="page-item" v-if="amount - currentPage > 2">
+                <a class="page-link" href="" @click="currentPage++">
                     Далее
                 </a>
-            </td>
-        </tr>
-    </table>
+            </li>
+        </ul>
+    </nav>
 </template>
 
 <script>
@@ -49,7 +50,7 @@
         },
         watch: {
             currentPage(val) {
-                this.$router.push({path: this.url + "" + val});
+                this.$router.push(this.url + "" + val);
             },
         },
     }

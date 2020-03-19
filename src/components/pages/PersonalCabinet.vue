@@ -4,34 +4,41 @@
             {{this.$route.params.username}}
         </h1>
         <ErrorBox v-bind:errors="errorRow"></ErrorBox>
-        <h2>
+        <h4>
             Персональная информация
-        </h2>
-        <ul v-for="(value, key) in names" v-bind:key="key">
-            <template v-if="!editing">
-                <template v-if="key !== 'password'">
-                    {{value}}:
-                    <label v-if="info[key] != null"> {{info[key]}} </label>
-                    <label v-else> заполните это поле</label>
-                    <br/>
+        </h4>
+        <div class="container form-control shadow-sm col-6">
+            <div v-for="(value, key) in names" v-bind:key="key">
+                <template v-if="!editing">
+                    <template v-if="key !== 'password'">
+                        {{value}}:
+                        <label v-if="info[key] != null"> {{info[key]}} </label>
+                        <label v-else>не заполнено</label>
+                        <br/>
+                    </template>
                 </template>
-            </template>
-            <template v-else>
-                <form @submit="updateInfo" onsubmit="return false;">
-                    {{value}}:
-                    <label v-if="newData[key] !== undefined">
-                        <input v-if="key === 'birthday'" type="text" @input="validate" v-model="newData[key]"
-                               placeholder="mm/dd/yyyy">
-                        <input v-else type="text" @input="changed = true" v-model="newData[key]">
-                    </label>
-                    <label v-else> {{info[key]}} </label>
-                    <br/>
-                </form>
-            </template>
-        </ul>
-        <button v-if="changed && editing" @click="updateInfo" type="submit">Сохранить изменения</button>
-        <button v-if="!editing && allowed" @click="editing = true">Редактировать</button>
-        <button v-if="editing" @click="editing = false">Отменить</button>
+                <template v-else>
+                    <form @submit="updateInfo" onsubmit="return false;">
+                        {{value}}: <br>
+                        <label v-if="newData[key] !== undefined">
+
+                            <input class="form-control" v-if="key === 'birthday'" type="text" @input="validate" v-model="newData[key]"
+                                   placeholder="mm/dd/yyyy">
+                            <input class="form-control" v-else type="text" @change="changed = true" :placeholder="newData[key]"
+                                   v-model="newData[key]">
+                        </label>
+                        <label v-else> {{info[key]}} </label>
+                        <br/>
+                    </form>
+                </template>
+            </div>
+            <button class="btn btn-outline-secondary" v-if="changed && editing" @click="updateInfo" type="submit">
+                Сохранить изменения
+            </button>
+            <button class="btn btn-outline-secondary" v-if="!editing && allowed" @click="editing = true">Редактировать
+            </button>
+            <button class="btn btn-outline-secondary" v-if="editing" @click="editing = false">Отменить</button>
+        </div>
         <div>
             <h2>Статистика по заданиям</h2>
             <Statistics type="user"></Statistics>
@@ -142,7 +149,7 @@
                         let date = response.data.birthday.split("-");
                         this.info.birthday = date[1] + "/" + date[2] + "/" + date[0];
                     }
-                    localStorage.setItem("status", response.data.status);
+                    localStorage.setItem("role", response.data.role);
                     callback();
                 }).catch(error => {
                     for (let i of error.response.data.errors)

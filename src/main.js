@@ -1,8 +1,11 @@
 import Vue from 'vue'
 
-import {BootstrapVue, IconsPlugin} from 'bootstrap-vue'
+import {BootstrapVue, IconsPlugin, BootstrapVueIcons} from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
+import {BIconPerson, BIconChevronLeft, BIconArrowLeft, BIconLockFill } from 'bootstrap-vue'
+
+
 
 import App from './App.vue'
 
@@ -20,6 +23,12 @@ import Exception from "@/components/pages/Exception";
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
+Vue.use(BootstrapVueIcons);
+Vue.component('Person', BIconPerson);
+Vue.component('ArrowLeft', BIconArrowLeft);
+Vue.component('LockFill', BIconLockFill);
+Vue.component('ChevronLeft', BIconChevronLeft);
+
 const routes = [
     {path: '/', component: Login},
     {path: '/registration', component: Registration},

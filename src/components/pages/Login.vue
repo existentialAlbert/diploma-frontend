@@ -3,23 +3,24 @@
         <ErrorBox v-bind:errors="errorRow"></ErrorBox>
         <br>
         <h1>Вход в систему</h1>
+        <br>
         <div class="container col-4">
-        <form class="form-control" onsubmit="return false;">
-            <label>
-                Имя пользователя
+            <form class="form-control shadow-sm" @submit="logIn" onsubmit="return false;">
+                <label>
+                    Имя пользователя
+                    <Person></Person>
+                    <input class="form-control shadow-sm" type="text" maxlength="25" v-model="login">
+                </label>
                 <br>
-                <input class="form-control" type="text" maxlength="25" v-model="login">
-            </label>
-            <br>
-            <label>
-                Пароль
+                <label>
+                    Пароль
+                    <LockFill></LockFill>
+                    <input class="form-control shadow-sm" type="password" maxlength="40" v-model="password">
+                </label>
                 <br>
-                <input class="form-control" type="password" maxlength="40" v-model="password">
-            </label>
-            <br>
-            <button class="btn btn-outline-primary" @click="logIn">Войти</button>
-            <br/>
-        </form>
+                <button class="btn btn-outline-primary">Войти</button>
+                <br/>
+            </form>
         </div>
     </div>
 </template>
@@ -55,6 +56,7 @@
                             this.errorRow.push(i.message);
                     else this.errorRow.push(error.response.data.message);
                 });
+                return false;
             }
         }
     }

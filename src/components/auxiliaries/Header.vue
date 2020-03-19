@@ -1,15 +1,21 @@
 <template>
     <div>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
             <div class="container-fluid">
                 <ul class="navbar-nav" v-if="tokenized">
                     <li>
-                        <a class="nav-link" href="/users/page/0">Посмотреть других юзеров</a>
+                        <a @click="$router.back" class="nav-link">
+                       <ArrowLeft>
+                       </ArrowLeft>
+                        Назад
+                    </a>
                     </li>
                     <li>
-                        <a class="nav-link" href="/tasks/page/0">Перейти к задачам</a>
+                        <a class="nav-link" href="/users/page/0">Другие пользователи</a>
                     </li>
-
+                    <li>
+                        <a class="nav-link" href="/tasks/page/0">Задачи</a>
+                    </li>
                     <li v-if="isAdmin">
                         <a class="nav-link" href="/errors/page/0">Ошибки</a>
                     </li>
@@ -26,7 +32,7 @@
                 </div>
                 <ul class="navbar-nav" v-if="tokenized">
                     <li class="nav-item">
-                        <b-dd v-bind:text="name" right role="button">
+                        <b-dd class="shadow-sm" v-bind:text="name" right role="button">
                             <b-dropdown-item @click="personalCabinet">Перейти в личный кабинет</b-dropdown-item>
                             <b-dropdown-item @click="exit">Выйти</b-dropdown-item>
                         </b-dd>
@@ -46,7 +52,7 @@
                 token: localStorage.getItem("token"),
                 name: localStorage.getItem("name"),
                 tokenized: localStorage.getItem("token") != undefined,
-                isAdmin: localStorage.getItem("status"),
+                isAdmin: localStorage.getItem("status") === "ADMIN",
             }
         },
         watch: {

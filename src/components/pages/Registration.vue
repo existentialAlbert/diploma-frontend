@@ -1,19 +1,19 @@
 <template>
-    <div>
+    <div class="container col-6">
+        <br/>
         <h1>Регистрация</h1>
+        <br/>
         <ErrorBox v-bind:errors="errorRow"></ErrorBox>
-        <form onsubmit="return false;">
+        <form  class="form-control" onsubmit="return false;">
             <label>
                 Введите свой никнейм:<br/>
-                <input type="text" v-model="login" maxlength="25"/>
-                <br/>
+                <input class="form-control" type="text" v-model="login" maxlength="25"/>
                 Введите пароль:<br/>
-                <input type="password" v-model="password" maxlength="40">
-                <br/>
+                <input class="form-control" type="password" v-model="password" maxlength="40">
                 Введите пароль еще раз:<br/>
-                <input type="password" v-model="approval" maxlength="40">
+                <input class="form-control" type="password" v-model="approval" maxlength="40">
                 <br/>
-                <button @click="registration">Создать аккаунт</button>
+                <button class="btn btn-outline-primary" @click="registration">Создать аккаунт</button>
             </label>
         </form>
     </div>
