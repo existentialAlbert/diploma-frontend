@@ -1,8 +1,9 @@
 <template>
     <div id="app">
         <Header></Header>
-        <router-view></router-view>
-    </div>
+        <transition>
+            <router-view></router-view>
+        </transition>    </div>
 </template>
 <script>
 /*
@@ -26,7 +27,5 @@ export default {
         -moz-osx-font-smoothing: grayscale;
         text-align: center;
         color: #2c3e50;
-    }
-    body{
     }
 </style>

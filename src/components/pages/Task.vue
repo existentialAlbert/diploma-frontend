@@ -5,19 +5,14 @@
             <h2>Задание</h2>
             {{text.description}}
             <br/>
-            {{text.code}}
+            <pre v-html="text.code">
+            </pre>
         </article>
         <form onsubmit="return false" @submit="check">
-            <table align="center">
-                <tr>
-                    <td v-bind:style="{}">
-                        <label>Ваш ответ:<br/>
-                            <textarea cols="50" rows="15" v-model="userAnswer"
-                                      style="width:560px;" v-bind:style="{border: colour}"> </textarea>
-                        </label>
-                    </td>
-                </tr>
-            </table>
+            <label>Ваш ответ:<br/>
+                <textarea class="form-control" cols="50" rows="15" v-model="userAnswer"
+                          style="width:560px;" v-bind:style="{border: colour}"> </textarea>
+            </label>
             <button v-if="!checked && !isEmpty">Проверить</button>
             <template v-if="checked">
                 <Statistics v-bind:id="this.$route.params.task_id" type="task"></Statistics>
@@ -32,9 +27,6 @@
 
 <script>
     import Statistics from "@/components/auxiliaries/Statistics";
-    import hljs from 'highlight.js/lib/highlight';
-    import java from 'highlight.js/lib/languages/java';
-    hljs.registerLanguage('java', java);
 
     const axios = require('axios').default;
     export default {
@@ -69,7 +61,7 @@
                 this.taskInfo = response.data;
                 let arr = response.data.text.split("<code>");
                 this.text.description = arr[0];
-                this.text.code = arr[1].replace("</code>", "");
+                this.text.code = "<code>\n" + arr[1];
                 this.text.explanation = response.data.explanation;
                 console.log(this.text.code);
 

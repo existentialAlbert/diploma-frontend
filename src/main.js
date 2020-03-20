@@ -6,7 +6,6 @@ import 'bootstrap-vue/dist/bootstrap-vue.css';
 import {BIconPerson, BIconChevronLeft, BIconArrowLeft, BIconLockFill } from 'bootstrap-vue'
 
 
-
 import App from './App.vue'
 
 import VueRouter from 'vue-router'

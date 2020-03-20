@@ -4,7 +4,7 @@
             <div class="container-fluid">
                 <ul class="navbar-nav" v-if="tokenized">
                     <li>
-                        <a @click="$router.back" class="nav-link">
+                        <a @click="back" class="nav-link">
                        <ArrowLeft>
                        </ArrowLeft>
                         Назад
@@ -16,9 +16,15 @@
                     <li>
                         <a class="nav-link" href="/tasks/page/0">Задачи</a>
                     </li>
-                    <li v-if="isAdmin">
-                        <a class="nav-link" href="/errors/page/0">Ошибки</a>
-                    </li>
+                    <template v-if="isAdmin">
+                        <li>
+                            <a class="nav-link" href="/errors/page/0">Ошибки</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="/tasks/task/add">Добавить таск</a>
+                        </li>
+                    </template>
+
                 </ul>
                 <div class="container" v-else>
                     <ul class="navbar-nav ">
@@ -75,6 +81,9 @@
             personalCabinet: function () {
                 this.$router.push('/users/user/' + localStorage.getItem("name"));
             },
+            back(){
+                this.$router.back();
+            }
         },
     }
 </script>
