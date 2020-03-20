@@ -1,7 +1,6 @@
 <template>
     <div class="container">
         <h1>Задачи</h1>
-
         <div v-for="(tasksGroup, value) in page" v-bind:key="tasksGroup">
             <h4>{{value}}</h4>
             <a v-for="(task) in tasksGroup" href="" @click="sendToTask(task.id)" v-bind:key="task">
@@ -11,7 +10,6 @@
         </div>
         <Pagination :amount="pages - 1" url="/tasks/page/"></Pagination>
         <button class="btn btn-outline-secondary" @click="solveRandomTask">Решить рандомный таск</button>
-        <a class="nav-link" v-if="role === 'ADMIN' || role === 'TEACHER'" href="/tasks/create">Создать задачу</a>
         <label v-if="visible">Вы уже решили все таски!</label>
     </div>
 </template>
@@ -27,7 +25,6 @@
         data() {
             return {
                 page: {},
-                role: localStorage.getItem("role"),
                 visible: false,
                 tasks: 8,
                 tasksOnOnePage: 2,

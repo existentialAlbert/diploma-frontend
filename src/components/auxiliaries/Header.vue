@@ -5,10 +5,10 @@
                 <ul class="navbar-nav" v-if="tokenized">
                     <li>
                         <a @click="back" class="nav-link">
-                            <ArrowLeft>
-                            </ArrowLeft>
-                            Назад
-                        </a>
+                       <ArrowLeft>
+                       </ArrowLeft>
+                        Назад
+                    </a>
                     </li>
                     <li>
                         <a class="nav-link" href="/users/page/0">Другие пользователи</a>
@@ -16,9 +16,15 @@
                     <li>
                         <a class="nav-link" href="/tasks/page/0">Задачи</a>
                     </li>
-                    <li v-if="role === 'ADMIN'">
-                        <a class="nav-link" href="/errors/page/0">Ошибки</a>
-                    </li>
+                    <template v-if="isAdmin">
+                        <li>
+                            <a class="nav-link" href="/errors/page/0">Ошибки</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" href="/tasks/task/add">Добавить таск</a>
+                        </li>
+                    </template>
+
                 </ul>
                 <div class="container" v-else>
                     <ul class="navbar-nav ">
@@ -52,7 +58,7 @@
                 token: localStorage.getItem("token"),
                 name: localStorage.getItem("name"),
                 tokenized: localStorage.getItem("token") != undefined,
-                role: localStorage.getItem("role"),
+                isAdmin: localStorage.getItem("status") === "ADMIN",
             }
         },
         watch: {
@@ -60,7 +66,7 @@
                 this.token = localStorage.getItem("token");
                 this.name = localStorage.getItem("name");
                 this.tokenized = localStorage.getItem("token") != undefined;
-                this.isAdmin = localStorage.getItem("role") === "ADMIN";
+                this.isAdmin = localStorage.getItem("status") === "ADMIN";
             },
         },
         methods: {
@@ -75,7 +81,7 @@
             personalCabinet: function () {
                 this.$router.push('/users/user/' + localStorage.getItem("name"));
             },
-            back() {
+            back(){
                 this.$router.back();
             }
         },

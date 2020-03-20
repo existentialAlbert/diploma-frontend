@@ -4,8 +4,8 @@
         <br>
         <h1>Вход в систему</h1>
         <br>
-        <div class="container col-4">
-            <form class="form-control shadow-sm" @submit="logIn" onsubmit="return false;">
+        <div class="container col-4 ">
+            <form style="padding-bottom: 2%; padding-top: 2%" class="form-group rounded border shadow-sm" @submit="logIn" onsubmit="return false;">
                 <label>
                     Имя пользователя
                     <Person></Person>
