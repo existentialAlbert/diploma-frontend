@@ -7,7 +7,7 @@
         <h4>
             Персональная информация
         </h4>
-        <div  style="padding-bottom: 2%; padding-top: 2%" class="container form-group border rounded shadow-sm col-6">
+        <div  style="padding-bottom: 1%; padding-top: 1%" class="container form-group border rounded shadow-sm col-6">
             <div v-for="(value, key) in names" v-bind:key="key">
                 <template v-if="!editing">
                     <template v-if="key !== 'password'">
