@@ -14,10 +14,11 @@ import Login from "@/components/pages/Login";
 import UsersPage from "@/components/pages/UsersPage";
 import Registration from "@/components/pages/Registration";
 import PersonalCabinet from "@/components/pages/PersonalCabinet";
-import TasksPage from "@/components/pages/TasksPage";
-import Task from "@/components/pages/Task";
+import TasksPage from "@/components/pages/task_related/TasksPage";
+import Task from "@/components/pages/task_related/Task";
 import ExceptionsPage from "@/components/pages/ExceptionsPage";
 import Exception from "@/components/pages/Exception";
+import TaskGenerator from "@/components/pages/task_related/TaskGenerator";
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
@@ -35,6 +36,7 @@ const routes = [
     {path: '/users/page/:page', component: UsersPage},
     {path: '/tasks/page/:page', component: TasksPage},
     {path: '/tasks/task/:task_id', component: Task},
+    {path: '/tasks/generate', component: TaskGenerator},
     {path: '/errors/page/:page', component: ExceptionsPage},
     {path: '/errors/error/:code', component: Exception}
 ];

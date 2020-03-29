@@ -11,6 +11,8 @@
         <Pagination :amount="pages - 1" url="/tasks/page/"></Pagination>
         <button class="btn btn-outline-secondary" @click="solveRandomTask">Решить рандомный таск</button>
         <label v-if="visible">Вы уже решили все таски!</label>
+        <a class="nav-link" href="/tasks/generate">Добавить задачу</a>
+
     </div>
 </template>
 
