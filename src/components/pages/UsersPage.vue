@@ -35,12 +35,12 @@
                 this.$router.push('/users/user/' + i);
             },
             refresh(callback) {
-                axios(`users/page/${this.$route.params.page}/size/${this.usersOnOnePage}`).then(response => {
+                axios(`api/users/page/${this.$route.params.page}/size/${this.usersOnOnePage}`).then(response => {
                     this.page = [];
                     for (let i in response.data)
                         this.page.push(response.data[i]);
                 });
-                axios("users/count").then(response => {
+                axios("api/users/count").then(response => {
                     this.users = response.data.count;
                     callback();
                 });

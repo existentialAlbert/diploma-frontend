@@ -41,7 +41,7 @@
         methods: {
             registration: function () {
                 if (this.correct)
-                    axios.post("users", {
+                    axios.post("api/users", {
                         "password": this.password,
                         "username": this.login
                     }).then(() =>

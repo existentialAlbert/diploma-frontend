@@ -27,11 +27,12 @@
 
 <script>
     import Statistics from "@/components/auxiliaries/Statistics";
+    import StackComponent from "@/components/pages/task_related/StackComponent";
 
     const axios = require('axios').default;
     export default {
         name: "Task",
-        components: {Statistics},
+        components: {StackComponent, Statistics},
         data: function () {
             return {
                 taskInfo: {},
@@ -49,7 +50,7 @@
         methods: {
             check() {
                 this.colour = this.userAnswer === this.taskInfo.correctAnswer ? "2px solid lime" : "2px solid red";
-                axios.post(`task-interactions`, {
+                axios.post(`api/task-interactions`, {
                     "answer": this.userAnswer,
                     "taskId": String(this.$route.params.task_id),
                 }).then(() => this.checked = true);
@@ -57,7 +58,7 @@
             },
         },
         created() {
-            axios(`tasks/${this.$route.params.task_id}`).then(response => {
+            axios(`api/tasks/${this.$route.params.task_id}`).then(response => {
                 this.taskInfo = response.data;
                 let arr = response.data.text.split("<code>");
                 this.text.description = arr[0];
@@ -66,7 +67,7 @@
                 console.log(this.text.code);
 
             });
-            axios(`task-interactions/task/${this.$route.params.task_id}`).then(response => {
+            axios(`api/task-interactions/task/${this.$route.params.task_id}`).then(response => {
                 this.userAnswer = response.data.userAnswer;
                 this.taskInfo.correctAnswer = response.data.correctAnswer;
                 this.colour = this.userAnswer === this.taskInfo.correctAnswer ? "2px solid lime" : "2px solid red";

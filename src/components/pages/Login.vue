@@ -42,7 +42,7 @@
         methods: {
             logIn: function () {
                 const axios = require('axios').default;
-                axios.post("auth/login", {
+                axios.post("api/auth/login", {
                     "password": this.password,
                     "username": this.login
                 }).then((response) => {

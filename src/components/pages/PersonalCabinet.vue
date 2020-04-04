@@ -97,7 +97,7 @@
         methods: {
             updateInfo: function () {
                 if (this.errorRow.length === 0) {
-                    axios.put(`users/${this.info.id}`, {
+                    axios.put(`api/users/${this.info.id}`, {
                         "id": this.info.id,
                         "fio": this.newData.fio,
                         "email": this.newData.email === "" ? null : this.newData.email,
@@ -142,7 +142,7 @@
             getInfo: function (callback = () => {
             }) {
                 axios.defaults.headers["Authorization"] = "Bearer " + localStorage.getItem("token");
-                axios(`users/username/${this.$route.params.username}`).then(response => {
+                axios(`api/users/username/${this.$route.params.username}`).then(response => {
                     this.info = response.data;
                     localStorage.setItem("id", this.info.id);
                     if (response.data.birthday != null) {

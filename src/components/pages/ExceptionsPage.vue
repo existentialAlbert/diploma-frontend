@@ -26,7 +26,7 @@
             },
         },
         created() {
-            axios("errors/unsolved").then(response => {
+            axios("api/errors/unsolved").then(response => {
                 this.page = response.data;
             });
         },

@@ -7,8 +7,7 @@
             <h4>Сложность</h4>
             <label>
                 <select v-model="chosenDifficulty" class="form-control shadow-sm">
-                    <option v-for="d
-                    iff in difficulties" v-bind:key="diff">{{diff.caption}}
+                    <option v-for="diff in difficulties" v-bind:key="diff">{{diff.caption}}
                     </option>
                 </select>
             </label>
@@ -54,17 +53,17 @@
                         d = element.difficulty;
                 });
                 console.log(t, d);
-                axios.post("tasks", {
+                axios.post("api/tasks", {
                     "taskDifficulty": d,
                     "taskType": t
-                }).then({});
+                }).then();
             },
         },
         created() {
-            axios("tasks/difficulties").then(response => {
+            axios("api/tasks/difficulties").then(response => {
                 this.difficulties = response.data;
             });
-            axios("tasks/types").then(response => {
+            axios("api/tasks/types").then(response => {
                 this.types = response.data;
             });
         },

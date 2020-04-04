@@ -42,13 +42,13 @@
                 this.$router.push("/tasks/task/" + taskId);
             },
             solveRandomTask() {
-                axios("tasks/unsolved").then(response => this.sendToTask(response.data.id)).catch(error => {
+                axios("api/tasks/unsolved").then(response => this.sendToTask(response.data.id)).catch(error => {
                     if (error.data.status == 400)
                         this.visible = true;
                 });
             },
             refresh(callback) {
-                axios(`tasks/page/${this.$route.params.page}/size/${this.tasksOnOnePage}`).then(response => {
+                axios(`api/tasks/page/${this.$route.params.page}/size/${this.tasksOnOnePage}`).then(response => {
                     let types = {};
                     for (let i in response.data) {
                         let type = response.data[i].type.caption;

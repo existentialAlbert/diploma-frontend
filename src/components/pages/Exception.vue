@@ -26,11 +26,11 @@
         },
         methods: {
             solve() {
-                axios.put(`errors/${this.$route.code}`).then(() => this.$router.push("/errors/page/0"));
+                axios.put(`api/errors/${this.$route.code}`).then(() => this.$router.push("/errors/page/0"));
             }
         },
         created() {
-            axios(`errors/${this.$route.params.code}`).then(response => {
+            axios(`api/errors/${this.$route.params.code}`).then(response => {
                 this.info = response.data;
             })
         },
