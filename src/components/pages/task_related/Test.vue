@@ -1,10 +1,12 @@
 <template>
-    $END$
+    <StackComponent></StackComponent>
 </template>
 
 <script>
+    import StackComponent from "@/components/pages/task_related/StackComponent";
     export default {
-        name: "Test"
+        name: "Test",
+        components: {StackComponent}
     }
 </script>
 

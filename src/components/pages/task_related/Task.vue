@@ -11,11 +11,11 @@
         <form onsubmit="return false" @submit="check">
             <label>Ваш ответ:<br/>
                 <textarea class="form-control" cols="50" rows="15" v-model="userAnswer"
-                          style="width:560px;" v-bind:style="{border: colour}"> </textarea>
+                          style="width:560px;" :style="{border: colour}"> </textarea>
             </label>
             <button v-if="!checked && !isEmpty">Проверить</button>
             <template v-if="checked">
-                <Statistics v-bind:id="this.$route.params.task_id" type="task"></Statistics>
+                <Statistics :id="this.$route.params.task_id" type="task"></Statistics>
                 <article>
                     <h2>Пояснение</h2>
                     {{text.explanation}}
@@ -27,12 +27,11 @@
 
 <script>
     import Statistics from "@/components/auxiliaries/Statistics";
-    import StackComponent from "@/components/pages/task_related/StackComponent";
 
     const axios = require('axios').default;
     export default {
         name: "Task",
-        components: {StackComponent, Statistics},
+        components: {Statistics},
         data: function () {
             return {
                 taskInfo: {},
