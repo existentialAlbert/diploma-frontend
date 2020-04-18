@@ -9,7 +9,11 @@
             <button @click="stop">Отменить симуляцию</button>
 
         </form>
-        <button @click="advance">Следующий шаг</button>
+        <button @click="put({'frames': [2, 3, 4, 5],
+                    'localVariables': [2],
+                    'operands': [2],}, 0)">Следующий шаг
+        </button>
+        <button>тест анимации</button>
         <div>
             <table class="stack">
                 <tr>
@@ -19,10 +23,6 @@
                         </label>
                     </td>
                 </tr>
-                <!-- <tr>
-                     <td align="left">Локальные переменные
-                         <label align="left" v-for="variable in stack.localVariables" :key="variable"><strong>{{variable.typeName}}:</strong> {{variable.value}}</label></td>
-                 </tr>-->
                 <tr>
                     <td>frames</td>
                     <td>local variables</td>
@@ -39,24 +39,58 @@
                     </td>
                 </tr>
             </table>
-
         </div>
     </div>
 </template>
 
 <script>
-    function getDownAnimation(amount) {
-        return [{transform: `translateY(-${35 * amount}px)`},
-            {transform: `translateY(${7 * amount}px)`}]
+    function lowerAnimation(amount) {
+        return [{transform: `translateY(-${35}px)`},
+            {transform: `translateY(${0 * amount}px)`}]
     }
 
-    function getUpAnimation(amount) {
+    function timing() {
+        return {
+            duration: 500,
+            easing: 'ease-in'
+        }
+    }
+
+    function newAnimation() {
+        return [{
+            transform: `translateY(-${35}px)`,
+            opacity: '0%'
+        },
+            {opacity: '0%', offset: 0.5},
+            {
+                transform: `translateY(${0}px)`,
+                opacity: '100%'
+            }]
+    }
+
+
+    function upperAnimation(amount) {
         return [{transform: `translateY(-${0}px)`},
-            {transform: `translateY(${-45* amount}px)`}]
+            {transform: `translateY(${-35 * amount}px)`}]
     }
-    function appearAnimation() {
 
+    function hold() {
+        return [{transform: `translateY(${-32}px)`},
+            {transform: `translateY(${-32}px)`}]
     }
+
+    function removeAnimation() {
+        return [{
+            transform: `translateY(0px)`,
+            opacity: '100%'
+        },
+            {opacity: '0%', offset: 0.5},
+            {
+                transform: `translateY(${-45}px)`,
+                opacity: '0%'
+            }]
+    }
+
     const axios = require('axios').default;
     export default {
         name: "StackComponent",
@@ -64,12 +98,11 @@
             return {
                 bytecodeLines: [],
                 visible: false,
-                stack_unit: "stack_unit",
-                appearing: "appearing stack_unit",
+                stack_unit: 'stack_unit',
                 stack: {
-                    'frames': [],
-                    'localVariables': [],
-                    'operands': [],
+                    'frames': [1],
+                    'localVariables': [1, 8],
+                    'operands': [1],
                 },
                 newStack: {},
                 stacksNumber: ['frames', 'localVariables', 'operands'],
@@ -88,14 +121,19 @@
                 for (let i = 0; i < this.max; i++) {
                     let row = [];
                     if (stacks.frames[i] != null)
-                        row.push(`<label><strong>${stacks['frames'][i].className}</strong><br>${stacks['frames'][i].method}</label>`);
+                    //row.push(`<label><strong>${stacks['frames'][i].className}</strong><br>${stacks['frames'][i].method}</label>`);
+                        row.push(stacks['frames'][i]);
                     else row.push(null);
                     if (stacks.localVariables[i] != null)
-                        row.push(`<label>${stacks['localVariables'][i].typeName}: ${stacks['localVariables'][i].value}</label>`);
+                    //row.push(`<label>${stacks['localVariables'][i].typeName}: ${stacks['localVariables'][i].value}</label>`);
+                        row.push(stacks['localVariables'][i]);
+
                     else row.push(null);
 
                     if (stacks.operands[i] != null)
-                        row.push(`<label>${stacks['operands'][i].typeName}: ${stacks['operands'][i].value}</label>`);
+                    //row.push(`<label>${stacks['operands'][i].typeName}: ${stacks['operands'][i].value}</label>`);
+                        row.push(stacks['operands'][i]);
+
                     else row.push(null);
                     rows.push(row);
                 }
@@ -103,72 +141,66 @@
             },
         },
         methods: {
-            pop(row) {
+            pop(row, data, i) {
+                let column = document.getElementsByName(row);
                 let td = document.getElementsByName(row)[1];
-                td.addEventListener('animationend', this.end2, false,);
-                td.classList.add('removing');
-                localStorage.setItem('row', row);
-                document.getElementsByName(row).forEach(el => {
-                    if (!el.classList.contains('removing'))
-                        el.classList.add('disappearing');
-                });
-            },
-            push(row, el) {
-                let td = document.getElementsByName(row)[0];
-                td.innerHTML = `<label>${el}</label>`;
-                td.classList.add('stack_unit');
-                td.addEventListener('animationend', this.end, false);
-                td.classList.add('new');
-                localStorage.setItem('row', row);
-                document.getElementsByName(row).forEach(el => {
-                    if (!el.classList.contains('new'))
-                        el.classList.add('appearing');
-                });
-            },
-            end() {
-                let row = localStorage.getItem('row');
-                let td = document.getElementsByName(row)[0];
-                //.let el = td.innerHTML;
-                td.classList.remove('stack_unit');
-                td.classList.remove('new');
-                document.getElementsByName(row).forEach(el =>
-                    el.classList.remove('appearing'));
-                td.removeEventListener('animationend', this.end, false);
-                td.innerHTML = '';
-                this.stack[this.stacksNumber[row]].unshift(this.newStack[this.stacksNumber[row]][0]);
-                if (this.newStack[this.stacksNumber[row]] !== this.stack[this.stacksNumber[row]])
-                    this.push(row, this.newStack[this.stacksNumber[row]].shift());
-            },
-            end2() {
-                let row = localStorage.getItem('row');
-                let td = document.getElementsByName(row)[1];
-                td.classList.remove('stack_unit');
-                td.classList.remove('removing');
-                document.getElementsByName(row).forEach(el =>
-                    el.classList.remove('disappearing'));
-                td.removeEventListener('animationend', this.end2, false);
-                td.innerHTML = '';
-                this.stack[this.stacksNumber[row]].shift();
-                if (this.newStack[this.stacksNumber[row]] !== this.stack[this.stacksNumber[row]])
-                    this.pop(row);
-            },
-            put(data) {
-                let newStack = data.stack;
-                this.newStack = newStack;
-                let a = 0;
-                for (let column in newStack) {
-                    setTimeout(() => {
-                        if (newStack[column].length > this.stack[column].length) {
-                            console.log(this.stack[column].length + " " + newStack[column].length);
-                            this.push(a, newStack[column].shift());
-                        }
-                        if (newStack[column].length < this.stack[column].length) {
-                            console.log(this.stack[column].length + " " + newStack[column].length);
-                            this.pop(a);
-                        }
-                        a++;
-                    }, 1000);
+                td.animate(removeAnimation(), timing());
+                let t;
+                for (let j = 2; j < column.length; j++)
+                    t = column[j].animate(upperAnimation(1), timing());
+                if (t === undefined) {
+                    this.stack[this.stacksNumber[row]].shift();
+                    this.put(data, row, i);
+                    return;
                 }
+                t.onfinish = () => {
+                    this.stack[this.stacksNumber[row]].shift();
+                    this.put(data, row, i);
+                };
+            },
+            push(row, element, data, i) {
+                let c = [document.getElementsByName(0),
+                    document.getElementsByName(1),
+                    document.getElementsByName(2)];
+                let td = document.getElementsByName(row)[0];
+                td.classList.add('stack_unit');
+                td.innerText = element;
+                td.animate(newAnimation(), timing());
+                let t;
+                for (let i = 0; i < c.length; i++)
+                    for (let j = 1; j < c[i].length; j++)
+                        if (i !== row)
+                            t = c[i][j].animate(hold(), timing());
+                        else
+                            t = c[i][j].animate(lowerAnimation(1), timing());
+                t.onfinish = () => {
+                    td.innerText = '';
+                    td.classList.remove('stack_unit');
+                    this.stack[this.stacksNumber[row]].unshift(element);
+                    this.put(data, row, i + 1);
+                };
+            },
+            put(data, row = 0, i = 1) {
+                if (row >= 3)
+                    return;
+                let column = this.stacksNumber[row];
+                let col = data[column];
+                let newLen = col.length;
+                let oldLen = this.stack[column].length;
+                /*if (oldLen > newLen || this.stack[column][oldLen - i] !== col[newLen - i]) {
+                    setTimeout(() => {
+                        this.pop(row, data, i);
+                    }, 100);
+                }
+                else */if (i <= newLen) {
+                    if (this.stack[column][oldLen - i] === undefined || this.stack[column][oldLen - i] !== col[newLen - i]) {
+                        setTimeout(() => {
+                            this.push(row, col[newLen - i], data, i);
+                        }, 100);
+                    }
+                }
+                if (i > newLen)
+                    this.put(data, row + 1);
             },
             start() {
                 axios.post("simulation/start", {"code": this.code})
@@ -199,7 +231,7 @@
         }
         ,
         created() {
-            this.current();
+            //this.current();
         }
     }
 </script>
