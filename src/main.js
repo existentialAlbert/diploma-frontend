@@ -20,7 +20,8 @@ import ExceptionsPage from "@/components/pages/ExceptionsPage";
 import Exception from "@/components/pages/Exception";
 import TaskGenerator from "@/components/pages/task_related/TaskGenerator";
 import Test from "@/components/pages/task_related/Test";
-
+import 'prismjs'
+import 'prismjs/themes/prism-coy.css'
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
