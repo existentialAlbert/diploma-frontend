@@ -20,9 +20,6 @@
                 </select>
             </label>
         </form>
-        <label>{{chosenType}}</label>
-        <label><br/>
-            {{chosenDifficulty}}</label>
         <button @click="create" class="btn btn-outline-primary">Создать задачу!</button>
     </div>
 </template>
@@ -43,7 +40,7 @@
             create() {
                 let d, t;
                 this.types.forEach(element => {
-                    console.log(this.chosenType + " " + element.caption + " " +  (this.chosenType === element.type));
+                    console.log(this.chosenType + " " + element.caption + " " + (this.chosenType === element.type));
                     if (element.caption === this.chosenType)
                         t = element.type;
                 });
@@ -56,7 +53,9 @@
                 axios.post("api/tasks", {
                     "taskDifficulty": d,
                     "taskType": t
-                }).then();
+                }).then(response => {
+                    this.$router.push(`/tasks/task/${response.data.id}`)
+                });
             },
         },
         created() {

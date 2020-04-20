@@ -29,7 +29,7 @@
                 page: {},
                 visible: false,
                 tasks: 8,
-                tasksOnOnePage: 2,
+                tasksOnOnePage: 20,
             }
         },
         computed: {
