@@ -59,11 +59,19 @@
         },
         methods: {
             check() {
-                this.colour = this.userAnswer === this.taskInfo.correctAnswer ? "2px solid lime" : "2px solid red";
-                axios.post(`api/task-interactions`, {
+                //this.colour = this.userAnswer === this.taskInfo.correctAnswer ? "2px solid lime" : "2px solid red";
+                axios.post(`api/task-interactions/`, {
                     "answer": this.userAnswer,
                     "taskId": String(this.$route.params.task_id),
-                }).then(() => this.checked = true);
+                }).then(() => {
+                    this.checked = true;
+                    axios(`api/task-interactions/task/${this.$route.params.task_id}`).then(response => {
+                        this.userAnswer = response.data.userAnswer;
+                        this.taskInfo.correctAnswer = response.data.correctAnswer;
+                        this.colour = this.userAnswer === this.taskInfo.correctAnswer ? "2px solid lime" : "2px solid red";
+                        this.checked = true;
+                    })
+                });
                 return false;
             },
         },
@@ -94,26 +102,30 @@
         padding-left: 25%;
         padding-right: 25%;
     }
+
     @keyframes disappear {
         from {
             opacity: 100%;
         }
-        to{
+        to {
             opacity: 0;
         }
     }
+
     @keyframes appear {
-        from{
+        from {
             opacity: 0;
         }
-        to{
+        to {
             opacity: 100%;
         }
     }
-    .button{
+
+    .button {
         animation: appear 0.5s 1 ease-in;
     }
-    .dbutton{
+
+    .dbutton {
         animation: disappear 0.5s 1 ease-in;
     }
 </style>
