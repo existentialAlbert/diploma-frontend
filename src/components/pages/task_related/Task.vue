@@ -66,9 +66,8 @@
                 }).then(() => {
                     this.checked = true;
                     axios(`api/task-interactions/task/${this.$route.params.task_id}`).then(response => {
-                        this.userAnswer = response.data.userAnswer;
                         this.taskInfo.correctAnswer = response.data.correctAnswer;
-                        this.colour = this.userAnswer === this.taskInfo.correctAnswer ? "2px solid lime" : "2px solid red";
+                        this.colour = response.data.userAnswer === this.taskInfo.correctAnswer ? "2px solid lime" : "2px solid red";
                         this.checked = true;
                     })
                 });
