@@ -16,6 +16,9 @@
                     <li>
                         <a class="nav-link" href="/tasks/page/0">Задачи</a>
                     </li>
+                    <li>
+                        <a class="nav-link" href="/simulation">Симуляция</a>
+                    </li>
                     <li v-if="role === 'ADMIN'">
                         <a class="nav-link" href="/errors/page/0">Ошибки</a>
                     </li>

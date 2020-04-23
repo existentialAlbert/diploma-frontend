@@ -1,6 +1,6 @@
 <template>
     <div v-if="isActive">
-        <div class="container alert alert-warning" role="alert">
+        <div class="container alert alert-warning border shadow-sm" role="alert">
             <div v-for="i of errors" v-bind:key="i">{{i}}<br></div>
         </div>
     </div>

@@ -3,7 +3,7 @@ import Vue from 'vue'
 import {BootstrapVue, IconsPlugin, BootstrapVueIcons} from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
-import {BIconPerson, BIconChevronLeft, BIconArrowLeft, BIconLockFill } from 'bootstrap-vue'
+import {BIconPerson, BIconChevronLeft, BIconArrowLeft, BIconLockFill} from 'bootstrap-vue'
 
 
 import App from './App.vue'
@@ -19,9 +19,10 @@ import Task from "@/components/pages/task_related/Task";
 import ExceptionsPage from "@/components/pages/ExceptionsPage";
 import Exception from "@/components/pages/Exception";
 import TaskGenerator from "@/components/pages/task_related/TaskGenerator";
-import Test from "@/components/pages/task_related/Test";
 import 'prismjs'
 import 'prismjs/themes/prism-coy.css'
+import Simulation from "@/components/pages/Simulation";
+
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
@@ -41,7 +42,7 @@ const routes = [
     {path: '/tasks/generate', component: TaskGenerator},
     {path: '/errors/page/:page', component: ExceptionsPage},
     {path: '/errors/error/:code', component: Exception},
-    {path: '/test', component: Test}
+    {path: '/simulation', component: Simulation}
 ];
 const axios = require('axios').default;
 const token = localStorage.getItem('token');
@@ -55,11 +56,11 @@ axios.interceptors.response.use(response => {
 }, error => {
     if (error.response.data.status === 403 && window.location.pathname !== "/") {
         console.log(window.location.href);
-       window.location.replace("/");
+        window.location.replace("/");
     }
     if (error.response.data.status === 500 && error.response.data.startsWith("<!doctype html>"))
         axios.post("api/auth/refresh").then(response => {
-           localStorage.setItem("token", response.data["token"]);
+            localStorage.setItem("token", response.data["token"]);
         });
     return Promise.reject(error);
 });
