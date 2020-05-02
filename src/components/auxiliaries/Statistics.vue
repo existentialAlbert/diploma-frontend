@@ -9,7 +9,7 @@
 <script>
     export default {
         name: "Statistics",
-        props: ["type"],
+        props: ["type",],
         data() {
             return {
                 answerCount: 0,
@@ -18,7 +18,12 @@
         },
         created() {
             const axios = require("axios").default;
-            axios(`api/task-interactions/${this.type}/stats/` + localStorage.getItem("id")).then(response => {
+            let id;
+            if (this.type === 'task')
+                id = this.$route.params.task_id;
+            else
+                id = localStorage.getItem('id');
+            axios(`api/task-interactions/${this.type}/stats/${id}`).then(response => {
                 this.answerCount = response.data.answerCount;
                 this.correctAnswersCount = response.data.correctAnswerCount;
             })
