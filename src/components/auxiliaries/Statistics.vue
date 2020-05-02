@@ -9,24 +9,38 @@
 <script>
     export default {
         name: "Statistics",
-        props: ["type",],
+        props: ["type", 'identificator'],
         data() {
             return {
-                answerCount: 0,
-                correctAnswersCount: 0,
+                answerCount: "",
+                correctAnswersCount: "",
             }
         },
-        created() {
-            const axios = require("axios").default;
-            let id;
-            if (this.type === 'task')
-                id = this.$route.params.task_id;
-            else
-                id = localStorage.getItem('id');
-            axios(`api/task-interactions/${this.type}/stats/${id}`).then(response => {
-                this.answerCount = response.data.answerCount;
-                this.correctAnswersCount = response.data.correctAnswerCount;
-            })
+        methods:{
+          async getInfo(){
+              const axios = require("axios").default;
+              let id;
+              if (this.type === 'task')
+                  id = this.$route.params.task_id;
+              else if (this.type === 'user')
+                  await axios(`/api/users/username/${this.$route.params.username}`).then(
+                      response => {
+                          id = response.data.id;
+                      }
+                  );
+              axios(`api/task-interactions/${this.type}/stats/${id}`).then(response => {
+                  this.answerCount = response.data.answerCount;
+                  this.correctAnswersCount = response.data.correctAnswerCount;
+              })
+          }
+        },
+        watch: {
+            $route() {
+                this.getInfo();
+            }
+        },
+        created(){
+            this.getInfo();
         }
     }
 </script>

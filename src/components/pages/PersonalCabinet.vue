@@ -144,7 +144,6 @@
                 axios.defaults.headers["Authorization"] = "Bearer " + localStorage.getItem("token");
                 axios(`api/users/username/${this.$route.params.username}`).then(response => {
                     this.info = response.data;
-                    localStorage.setItem("id", this.info.id);
                     if (response.data.birthday != null) {
                         let date = response.data.birthday.split("-");
                         this.info.birthday = date[1] + "/" + date[2] + "/" + date[0];
