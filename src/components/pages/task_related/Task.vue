@@ -11,6 +11,7 @@
                 {{text.code}}
             </prism>
         </article>
+
         <form class="form-group rounded" onsubmit="return false" @submit="check">
             <br/>
             <label>Ваш ответ:<br/>
@@ -19,7 +20,7 @@
             </label>
             <br>
             <span :class="t===1?'button':''">
-            <button v-if="t === 1" class="btn btn-primary">Проверить</button>
+            <button v-if="t === 1 && !checked" class="btn btn-primary">Проверить</button>
             </span>
             <template v-if="checked">
                 <Statistics :id="this.$route.params.task_id" type="task"></Statistics>
@@ -49,7 +50,8 @@
                 colour: "",
                 checked: false,
                 text: {},
-                t: 0
+                t: 0,
+                errorRow: [],
             }
         },
         computed: {
@@ -59,7 +61,6 @@
         },
         methods: {
             check() {
-                //this.colour = this.userAnswer === this.taskInfo.correctAnswer ? "2px solid lime" : "2px solid red";
                 axios.post(`api/task-interactions/`, {
                     "answer": this.userAnswer,
                     "taskId": String(this.$route.params.task_id),
@@ -80,10 +81,7 @@
                 let arr = response.data.text.split("<code>");
                 this.text.description = arr[0];
                 this.text.code = arr[1].replace('</code>', ''); //"<code>\n" + arr[1];
-
                 this.text.explanation = response.data.explanation;
-                console.log(this.text.code);
-
             });
             axios(`api/task-interactions/task/${this.$route.params.task_id}`).then(response => {
                 this.userAnswer = response.data.userAnswer;
@@ -91,7 +89,7 @@
                 this.colour = this.userAnswer === this.taskInfo.correctAnswer ? "2px solid lime" : "2px solid red";
                 this.checked = true;
             }).catch();
-        },
+        }
     }
 </script>
 

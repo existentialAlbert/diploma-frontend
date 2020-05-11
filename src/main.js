@@ -19,14 +19,17 @@ import Task from "@/components/pages/task_related/Task";
 import ExceptionsPage from "@/components/pages/ExceptionsPage";
 import Exception from "@/components/pages/Exception";
 import TaskGenerator from "@/components/pages/task_related/TaskGenerator";
+import TextHighlight from 'vue-text-highlight';
+import Simulation from "@/components/pages/simulation/Simulation";
 import 'prismjs'
 import 'prismjs/themes/prism-coy.css'
-import Simulation from "@/components/pages/Simulation";
+import SimulationStart from "@/components/pages/simulation/SimulationStart";
 
 Vue.use(VueRouter);
 Vue.use(BootstrapVue);
 Vue.use(IconsPlugin);
 Vue.use(BootstrapVueIcons);
+Vue.component('text-highlight', TextHighlight);
 Vue.component('Person', BIconPerson);
 Vue.component('ArrowLeft', BIconArrowLeft);
 Vue.component('LockFill', BIconLockFill);
@@ -42,7 +45,24 @@ const routes = [
     {path: '/tasks/generate', component: TaskGenerator},
     {path: '/errors/page/:page', component: ExceptionsPage},
     {path: '/errors/error/:code', component: Exception},
-    {path: '/simulation', component: Simulation}
+    {
+        path: '/simulation/start', component: SimulationStart,
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem("inSimulation") !== "true")
+                next();
+            else
+                next({path: '/simulation'});
+        }
+    },
+    {
+        path: '/simulation', component: Simulation,
+        beforeEnter: (to, from, next) => {
+            if (localStorage.getItem("inSimulation") !== "true")
+                next({path: '/simulation/start'});
+            else
+                next();
+        },
+    },
 ];
 const axios = require('axios').default;
 const token = localStorage.getItem('token');
@@ -55,7 +75,6 @@ axios.interceptors.response.use(response => {
     return response;
 }, error => {
     if (error.response.data.status === 403 && window.location.pathname !== "/") {
-        console.log(window.location.href);
         window.location.replace("/");
     }
     if (error.response.data.status === 500 && error.response.data.startsWith("<!doctype html>"))
@@ -73,4 +92,3 @@ new Vue({
     render: h => h(App),
     router,
 }).$mount('#app');
-

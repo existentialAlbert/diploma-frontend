@@ -1,27 +1,37 @@
 <template>
     <div>
-        <h1>Симуляция</h1>
-        <form onsubmit="return false">
-            <textarea v-model="code" rows="10" cols="50" placeholder="код для симуляции">
-            </textarea>
-            <br>
-            <button @click="start" :disabled="inAnimation">Начать симуляцию</button>
-            <button @click="stop" v-if="visible" :disabled="inAnimation">Отменить симуляцию</button>
-        </form>
-        <button @click="advance" :disabled="inAnimation">Следующий шаг
-        </button>
-        <div>
+        <h2 id="anchor1">Стек</h2>
+        <button @click="advance" :disabled="inAnimation">Следующий шаг</button>
+        <button @click="stop" :disabled="inAnimation">Отменить симуляцию</button>
+        <br>
+        <br>
+        <div class="d-flex justify-content-center">
+            <div id="description" class="overflow-auto description">
+                <span v-for="(i, index) in bytecodeLines" :key="i">
+                    <template v-if="index === instructionIndex">
+                        <text-highlight :queries="bytecodeLines[instructionIndex]">
+                            {{i}}
+                        </text-highlight>
+                    </template>
+                    <template v-else>
+                        {{i}}
+                    </template>
+                    <br>
+                </span>
+            </div>
             <table class="stack">
                 <tr>
-                    <td style="width: 550px">frames</td>
-                    <td style="width: 200px">local variables</td>
-                    <td style="width: 200px">operands</td>
+                    <td style="width: 425px; height: 35px"><h3>Frames</h3></td>
+                    <td style="width: 125px; height: 35px;"><h3>Local variables</h3></td>
+                    <td style="width: 125px; height: 35px;"><h3>Operands</h3></td>
                 </tr>
+
                 <tr :id="0">
                     <td :name="0"></td>
                     <td :name="1"></td>
                     <td :name="2"></td>
                 </tr>
+
                 <tr v-for="(row, index) in rows" :id="index+1" :key="row">
                     <td :name="index1" v-for="(item, index1) in row" :key="item"
                         :class="item == null?'':stack_unit" v-html="item">
@@ -30,49 +40,19 @@
             </table>
         </div>
     </div>
+
 </template>
 
 <script>
-    function lowerAnimation() {
-        return [{transform: `translateY(-${76}px)`},
-            {transform: `translateY(${10}px)`}]
-    }
+    import animations from "@/components/pages/animations";
 
-    function newAnimation() {
-        return [{
-            transform: `translateY(-${76}px)`,
-            opacity: '0%'
-        },
-            {opacity: '0%', offset: 0.5},
-            {
-                transform: `translateY(${10}px)`,
-                opacity: '100%'
-            }]
-    }
-
-    function timing() {
-        return {
-            duration: 1000,
-            easing: 'ease-in'
-        }
-    }
-
-
-    function upperAnimation() {
-        return [{transform: `translateY(${2}px)`},
-            {transform: `translateY(${-76}px)`}]
-    }
-
-    function removeAnimation() {
-        return [{transform: `translateY(${2}px)`, opacity: '100%'},
-            {opacity: '100%', offset: 0.5},
-            {transform: `translateY(${-76}px)`, opacity: '0%'}]
-    }
-
-    function hold() {
-        const a = -73;
-        return [{transform: `translateY(${a}px)`},
-            {transform: `translateY(${a}px)`}]
+    function equals(arr1, arr2) {
+        if (arr1.length !== arr2.length)
+            return false;
+        for (let i = 0; i < arr2.length; i++)
+            if (arr1[i] !== arr2[i])
+                return false;
+        return true
     }
 
     const axios = require('axios').default;
@@ -81,7 +61,7 @@
         data() {
             return {
                 bytecodeLines: [],
-                visible: false,
+                newBytecodeLines: [],
                 inAnimation: false,
                 stack_unit: 'stack_unit',
                 stack: {
@@ -89,10 +69,8 @@
                     'localVariables': [],
                     'operands': [],
                 },
-                newStack: {},
                 stacksNumber: ['frames', 'localVariables', 'operands'],
                 instructionIndex: 0,
-                code: "package test;\n\npublic class Test {\n public static void main(String[] args) {\n int i = Integer.valueOf(1488);\n }\n}",
             }
         },
         computed: {
@@ -107,15 +85,12 @@
                     let row = [];
                     if (stacks.frames[i] != null)
                         row.push(`<label><strong>${stacks['frames'][i].className}</strong><br>${stacks['frames'][i].method}</label>`);
-                    //row.push(stacks['frames'][i]);
                     else row.push(null);
                     if (stacks.localVariables[i] != null)
                         row.push(`<label>${stacks['localVariables'][i].typeName}: ${stacks['localVariables'][i].value}</label>`);
-                    //row.push(stacks['localVariables'][i]);
                     else row.push(null);
                     if (stacks.operands[i] != null)
                         row.push(`<label>${stacks['operands'][i].typeName}: ${stacks['operands'][i].value}</label>`);
-                    //row.push(stacks['operands'][i]);
                     else row.push(null);
                     rows.push(row);
                 }
@@ -126,13 +101,13 @@
             pop(row, index, data, i, current = 1) {
                 let column = document.getElementsByName(row);
                 let t;
-                t = column[1].animate(removeAnimation(), timing());
+                t = column[1].animate(animations.removeAnimation(), animations.timing());
                 t.onfinish = () => {
                     column[1].innerHTML = '';
                     column[1].classList.remove('stack_unit');
                 };
                 for (let j = 2; j < column.length; j++)
-                    t = column[j].animate(upperAnimation(1), timing(1));
+                    t = column[j].animate(animations.upperAnimation(), animations.timing());
                 if (t === undefined) {
                     this.stack[this.stacksNumber[row]].shift();
                     this.put(data, row, i);
@@ -154,14 +129,14 @@
                 let td = document.getElementsByName(row)[0];
                 td.classList.add('stack_unit');
                 td.innerHTML = element;
-                let b = td.animate(newAnimation(), timing());
+                let b = td.animate(animations.newAnimation(), animations.timing());
                 let t;
                 for (let i = 0; i < c.length; i++)
                     for (let j = 1; j < c[i].length; j++)
-                        if (i !== row)
-                            t = c[i][j].animate(hold(), timing());
-                        else
-                            t = c[i][j].animate(lowerAnimation(), timing());
+                        if (i !== row) {
+                            t = c[i][j].animate(animations.hold(), animations.timing());
+                        } else
+                            t = c[i][j].animate(animations.lowerAnimation(), animations.timing());
                 if (t === undefined) {
                     b.onfinish = () => {
                         td.innerHTML = '';
@@ -171,7 +146,6 @@
                     };
                     return;
                 }
-
                 t.onfinish = () => {
                     td.innerHTML = '';
                     td.classList.remove('stack_unit');
@@ -179,10 +153,12 @@
                     this.put(data, row, i + 1);
                 };
             },
-            put(data, row = 0, i = 1) {
-                this.inAnimation = true;
+            put(data, row = 0, i = 1, callback = () => {
+            }) {
+                this.inSimulation = true;
                 if (row >= 3) {
-                    this.inAnimation = false;
+                    callback();
+                    this.replaceBytecodeLines(this.newBytecodeLines);
                     return;
                 }
                 let column = this.stacksNumber[row];
@@ -211,39 +187,55 @@
                         return;
                     }
                     this.put(data, row, i + 1);
-                } else {
+                } else
                     this.put(data, row + 1);
-                }
             },
-            start() {
-                axios.post("simulation/start", {"code": this.code})
-                    .then(response => {
-                        this.put(response.data.stack);
-                        this.bytecodeLines = response.data.bytecodeLines;
-                        //this.visible = true;
-                    });
+            replaceBytecodeLines(newLines) {
+                if (!equals(this.bytecodeLines, newLines)) {
+                    let t = document.getElementById('description')
+                        .animate(animations.leftAnimation(), animations.linearTiming());
+                    t.onfinish = () => {
+                        this.bytecodeLines = newLines;
+                        let b = document.getElementById('description')
+                            .animate(animations.rightAnimation(), animations.linearTiming());
+                        b.onfinish = () => this.inAnimation = false
+                    }
+                } else this.inAnimation = false;
             },
             current() {
-                axios.put('simulation/current').then(response => {
+                this.inAnimation = true;
+                axios('simulation/current').then(response => {
+                    this.newBytecodeLines = response.data.bytecodeLines;
                     this.put(response.data.stack);
-                    this.bytecodeLines = response.data.bytecodeLines;
+                    this.instructionIndex = response.data.instructionIndex;
                     if (response.data.status === 'FINISHED')
                         this.stop();
-
+                }).catch(() => {
+                    this.stop();
                 });
             },
             advance() {
-                axios.put('simulation/advance').then(response => this.put(response.data.stack)).catch(() => {
+                this.inAnimation = true;
+                axios.put('simulation/advance').then(response => {
+                    this.newBytecodeLines = response.data.bytecodeLines;
+                    this.put(response.data.stack);
+                    this.instructionIndex = response.data.instructionIndex;
+                    if (response.data.status === 'FINISHED')
+                        this.stop();
+                }).catch(() => {
                     this.stop()
                 });
             },
             stop() {
                 axios.delete('simulation').then(() => {
-                    //this.visible = false;
+                    localStorage.setItem("inSimulation", "false");
+                    this.$router.push('/simulation/start');
+                }).catch(()=> {
+                    localStorage.setItem("inSimulation", "false");
+                    this.$router.push('/simulation/start');
                 });
             },
-        }
-        ,
+        },
         created() {
             this.current();
         }
@@ -251,24 +243,39 @@
 </script>
 
 <style scoped>
-    #description {
+    h3 {
+        font-size: 18px;
+    }
+
+    .description {
         max-width: 400px;
-        text-overflow: ellipsis;
-        padding-right: 2%;
-        padding-left: 0;
+        min-width: 400px;
+        min-height: 400px;
+        height: 25%;
+        overflow-y: scroll;
         text-align: left;
-        vertical-align: top
+        vertical-align: top;
+        font-size: 13px;
+        float: left;
+        padding-right: 2%;
+        display: block;
     }
 
     .stack_unit {
         border: black 1px solid;
-        height: 75px;
+        height: 55px;
+        min-width: 125px;
+        max-width: 425px;
+    }
+
+    .empty {
+        height: 0;
     }
 
     .stack {
+        float: left;
+        font-size: 13px;
         border-collapse: separate;
-        height: auto;
-        margin: auto;
-        border-spacing: 1em 3px;
+        border-spacing: 6px 1px;
     }
 </style>
