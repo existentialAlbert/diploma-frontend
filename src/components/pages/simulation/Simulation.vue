@@ -35,8 +35,8 @@
             <table class="stack">
                 <tr>
                     <td style="width: 425px; height: 35px"><h3>Frames</h3></td>
-                    <td style="width: 125px; height: 35px;"><h3>Local variables</h3></td>
-                    <td style="width: 125px; height: 35px;"><h3>Operands</h3></td>
+                    <td style="width: 140px; height: 35px;"><h3>Local variables</h3></td>
+                    <td style="width: 140px; height: 35px;"><h3>Operands</h3></td>
                 </tr>
 
                 <tr :id="0">
@@ -317,7 +317,7 @@
         min-height: 55px;
         max-height: 55px;
         height: 55px;
-        min-width: 125px;
+        min-width: 140px;
         max-width: 425px;
     }
 
