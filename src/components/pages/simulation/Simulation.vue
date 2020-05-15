@@ -7,11 +7,10 @@
         <br>
         <br>
         <div @click="off" id="overlay">
-            <div class="container col-4 overlay_text shadow-sm rounded">
+            <div class="overflow-auto container col-4 overlay_text shadow-sm rounded">
                 <br>
-                <div v-for="i in memory" :key="i">
-                    <div v-for="(key, value) in i" :key="key">
-                        {{value}}: {{key}}
+                <div v-for="i in memoryInRussian" :key="i">
+                    <div v-for="j in i" :key="j" v-html="j">
                         <br>
                     </div>
                     <br>
@@ -34,9 +33,9 @@
             </div>
             <table class="stack">
                 <tr>
-                    <td style="width: 425px; height: 35px"><h3>Frames</h3></td>
-                    <td style="width: 140px; height: 35px;"><h3>Local variables</h3></td>
-                    <td style="width: 140px; height: 35px;"><h3>Operands</h3></td>
+                    <td style="width: 425px; height: 35px"><h3>Фреймы</h3></td>
+                    <td style="width: 140px; height: 35px;"><h3>Локальные переменные</h3></td>
+                    <td style="width: 140px; height: 35px;"><h3>Стек операндов</h3></td>
                 </tr>
 
                 <tr :id="0">
@@ -110,6 +109,56 @@
                 }
                 return rows;
             },
+            memoryInRussian() {
+                let memory = [
+                    {
+                        "reference": -1,
+                        "className": "null",
+                        "object": null
+                    },
+                    {
+                        "reference": -228,
+                        "className": "java.lang.Integer",
+                        "object": 128
+                    },
+                    {
+                        "reference": -229,
+                        "className": "net.tierion.jvm.learning.utils.bytecode.LocalVariable",
+                        "object": {
+                            "variableClass": "int",
+                            "index": 0,
+                            "test": {
+                                "test": "test",
+                                "test1": "test",
+                                "test2": "test",
+                                "test3": "test",
+                                "test4": "test"
+                            }
+                        }
+                    }
+                ];
+                let preprocess = function (object, depth = 1) {
+                    let str = '';
+                    for (let subobject in object)
+                        if (typeof object[subobject] === "object")
+                            str += preprocess(object[subobject], depth + 1);
+                        else {
+                            let tab = '-';
+                            for (let i = 1; i < depth; i++)
+                                tab += tab;
+                            str += tab + ' ' + `${subobject}: ${object[subobject]} <br>`
+                        }
+                    return str;
+                };
+                let translatedMemory = [];
+                for (let i = 0; i < memory.length; i++) {
+                    let strs = [`Ссылка: ${memory[i].reference}`,
+                        `Имя класса: ${memory[i].className}`,
+                        `Объект: <br>${preprocess(memory[i].object)}`];
+                    translatedMemory.push(strs)
+                }
+                return translatedMemory;
+            }
         },
         methods: {
             pop(row, index, data, i, current = 1) {
@@ -218,7 +267,6 @@
             },
             showMemory() {
                 let overlay = document.getElementById("overlay");
-
                 overlay.style.display = 'block';
                 overlay.animate(animations.memoryAppearingAnimation(), animations.memoryTiming());
             },
@@ -277,7 +325,11 @@
     .overlay_text {
         background-color: white;
         margin: 11% auto;
+        min-height: 300px;
+        text-align: left;
         border: 1px solid;
+        max-height: 500px;
+        overflow-y: scroll;
     }
 
     #overlay {
