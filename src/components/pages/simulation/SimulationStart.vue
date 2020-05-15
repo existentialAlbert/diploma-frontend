@@ -13,10 +13,10 @@
                 </textarea>
             </label>
             <br>
-            <br>
             <button id='startButton' @click="start">
                 Начать симуляцию
             </button>
+            <br/>
         </form>
     </div>
 </template>
@@ -81,7 +81,7 @@
         name: "SimulationStart",
         data() {
             return {
-                code: (localStorage.getItem('code') === undefined || localStorage.getItem("code") === "") ?
+                code: (localStorage.getItem('code') == null || localStorage.getItem("code") === "") ?
                     'package test;\npublic class Test ' +
                     '{\n\t public static void main(String[] args) {\n\t\t' + "\n" + "\n\t}\n}" : localStorage.getItem("code"),
                 errorRow: [],

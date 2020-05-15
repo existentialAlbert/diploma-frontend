@@ -3,8 +3,21 @@
         <h2 id="anchor1">Стек</h2>
         <button @click="advance" :disabled="inAnimation">Следующий шаг</button>
         <button @click="stop" :disabled="inAnimation">Отменить симуляцию</button>
+        <button @click="showMemory" :disabled="inAnimation">Показать память симуляции</button>
         <br>
         <br>
+        <div @click="off" id="overlay">
+            <div class="container col-4 overlay_text shadow-sm rounded">
+                <br>
+                <div v-for="i in memory" :key="i">
+                    <div v-for="(key, value) in i" :key="key">
+                        {{value}}: {{key}}
+                        <br>
+                    </div>
+                    <br>
+                </div>
+            </div>
+        </div>
         <div class="d-flex justify-content-center">
             <div id="description" class="overflow-auto description">
                 <span v-for="(i, index) in bytecodeLines" :key="i">
@@ -62,6 +75,7 @@
             return {
                 bytecodeLines: [],
                 newBytecodeLines: [],
+                memory: {},
                 inAnimation: false,
                 stack_unit: 'stack_unit',
                 stack: {
@@ -202,11 +216,22 @@
                     }
                 } else this.inAnimation = false;
             },
-            showMemory(){
+            showMemory() {
+                let overlay = document.getElementById("overlay");
 
+                overlay.style.display = 'block';
+                overlay.animate(animations.memoryAppearingAnimation(), animations.memoryTiming());
+            },
+            off() {
+                let overlay = document.getElementById("overlay");
+                let b = overlay.animate(animations.memoryDisappearingAnimation(), animations.memoryTiming());
+                b.onfinish = () => overlay.style.display = 'none';
             },
             current() {
                 this.inAnimation = true;
+                axios('simulation/current/memory').then(response => {
+                    this.memory = response.data.memory;
+                });
                 axios('simulation/current').then(response => {
                     this.newBytecodeLines = response.data.bytecodeLines;
                     this.put(response.data.stack);
@@ -219,6 +244,9 @@
             },
             advance() {
                 this.inAnimation = true;
+                axios('simulation/current/memory').then(response => {
+                    this.memory = response.data.memory;
+                });
                 axios.put('simulation/current/advance').then(response => {
                     this.newBytecodeLines = response.data.bytecodeLines;
                     this.put(response.data.stack);
@@ -233,7 +261,7 @@
                 axios.delete('simulation/current').then(() => {
                     localStorage.setItem("inSimulation", "false");
                     this.$router.push('/simulation/start');
-                }).catch(()=> {
+                }).catch(() => {
                     localStorage.setItem("inSimulation", "false");
                     this.$router.push('/simulation/start');
                 });
@@ -246,13 +274,33 @@
 </script>
 
 <style scoped>
+    .overlay_text {
+        background-color: white;
+        margin: 11% auto;
+        border: 1px solid;
+    }
+
+    #overlay {
+        position: fixed;
+        display: none;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.2);
+        z-index: 2;
+        cursor: pointer;
+    }
+
     h3 {
         font-size: 18px;
     }
 
     .description {
-        max-width: 400px;
-        min-width: 400px;
+        max-width: 500px;
+        min-width: 500px;
         min-height: 400px;
         height: 25%;
         overflow-y: scroll;
@@ -266,13 +314,11 @@
 
     .stack_unit {
         border: black 1px solid;
+        min-height: 55px;
+        max-height: 55px;
         height: 55px;
         min-width: 125px;
         max-width: 425px;
-    }
-
-    .empty {
-        height: 0;
     }
 
     .stack {
