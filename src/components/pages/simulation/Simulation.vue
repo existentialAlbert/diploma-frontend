@@ -193,14 +193,17 @@
             replaceBytecodeLines(newLines) {
                 if (!equals(this.bytecodeLines, newLines)) {
                     let t = document.getElementById('description')
-                        .animate(animations.leftAnimation(), animations.linearTiming());
+                        .animate(animations.leftAnimation(), animations.easeOutTiming());
                     t.onfinish = () => {
                         this.bytecodeLines = newLines;
                         let b = document.getElementById('description')
-                            .animate(animations.rightAnimation(), animations.linearTiming());
+                            .animate(animations.rightAnimation(), animations.easeOutTiming());
                         b.onfinish = () => this.inAnimation = false
                     }
                 } else this.inAnimation = false;
+            },
+            showMemory(){
+
             },
             current() {
                 this.inAnimation = true;
@@ -216,7 +219,7 @@
             },
             advance() {
                 this.inAnimation = true;
-                axios.put('simulation/advance').then(response => {
+                axios.put('simulation/current/advance').then(response => {
                     this.newBytecodeLines = response.data.bytecodeLines;
                     this.put(response.data.stack);
                     this.instructionIndex = response.data.instructionIndex;
@@ -227,7 +230,7 @@
                 });
             },
             stop() {
-                axios.delete('simulation').then(() => {
+                axios.delete('simulation/current').then(() => {
                     localStorage.setItem("inSimulation", "false");
                     this.$router.push('/simulation/start');
                 }).catch(()=> {

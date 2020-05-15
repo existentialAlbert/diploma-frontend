@@ -104,7 +104,7 @@
         },
         methods: {
             start() {
-                axios.post("simulation/start", {"code": this.code}).then(() => {
+                axios.post("simulation/current", {"code": this.code}).then(() => {
                     localStorage.setItem("inSimulation", "true");
                     this.$router.push('/simulation');
                 }).catch(error => {

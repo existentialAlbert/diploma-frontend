@@ -51,7 +51,7 @@ export default {
         ]
     },
 
-    linearTiming() {
+    easeOutTiming() {
         return {
             duration: 750,
             easing: 'ease-out'
