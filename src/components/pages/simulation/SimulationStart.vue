@@ -7,13 +7,13 @@
         </ErrorBox>
         <br>
         <form onsubmit="return false">
-            <label style="text-align: left; "><h3 style="padding-left: 5%; color: grey">Код для симуляции</h3>
+            <label style="text-align: left; "><h3>Код для симуляции</h3>
                 <textarea class="shadow-sm form-group rounded" rows="20" cols="75"
                           v-model="code">
                 </textarea>
             </label>
             <br>
-            <button id='startButton' @click="start">
+            <button class="btn btn-outline-primary" id='startButton' style="margin-bottom: 3%" @click="start">
                 Начать симуляцию
             </button>
             <br/>

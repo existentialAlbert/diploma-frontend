@@ -1,9 +1,11 @@
 <template>
     <div>
         <h2 id="anchor1">Стек</h2>
-        <button @click="advance" :disabled="inAnimation">Следующий шаг</button>
-        <button @click="stop" :disabled="inAnimation">Отменить симуляцию</button>
-        <button @click="showMemory" :disabled="inAnimation">Показать память симуляции</button>
+        <button :class="control_btn" style="" @click="advance" :disabled="inAnimation">Следующий шаг</button>
+        <button :class="control_btn" @click="stop" :disabled="inAnimation">Отменить симуляцию</button>
+        <button :class="control_btn" @click="showMemory" :disabled="inAnimation">Память
+            симуляции
+        </button>
         <br>
         <br>
         <div @click="off" id="overlay">
@@ -21,7 +23,7 @@
             <div id="description" class="overflow-auto description">
                 <span v-for="(i, index) in bytecodeLines" :key="i">
                     <template v-if="index === instructionIndex">
-                        <text-highlight :queries="bytecodeLines[instructionIndex]">
+                        <text-highlight :highlightClass="highlight" :queries="bytecodeLines[instructionIndex]">
                             {{i}}
                         </text-highlight>
                     </template>
@@ -33,9 +35,9 @@
             </div>
             <table class="stack">
                 <tr>
-                    <td style="width: 425px; height: 35px"><h3>Фреймы</h3></td>
-                    <td style="width: 140px; height: 35px;"><h3>Локальные переменные</h3></td>
-                    <td style="width: 140px; height: 35px;"><h3>Стек операндов</h3></td>
+                    <td style="min-width: 425px;width: 425px; height: 35px"><h3>Фреймы</h3></td>
+                    <td style="min-width: 140px;width: 140px; height: 35px;"><h3>Локальные переменные</h3></td>
+                    <td style="min-width: 140px;width: 140px; height: 35px;"><h3>Стек операндов</h3></td>
                 </tr>
 
                 <tr :id="0">
@@ -76,7 +78,9 @@
                 newBytecodeLines: [],
                 memory: {},
                 inAnimation: false,
-                stack_unit: 'stack_unit',
+                stack_unit: 'stack_unit rounded',
+                control_btn: 'control_btn btn btn-outline-secondary',
+                highlight: 'highlight',
                 stack: {
                     'frames': [],
                     'localVariables': [],
@@ -110,33 +114,7 @@
                 return rows;
             },
             memoryInRussian() {
-                let memory = [
-                    {
-                        "reference": -1,
-                        "className": "null",
-                        "object": null
-                    },
-                    {
-                        "reference": -228,
-                        "className": "java.lang.Integer",
-                        "object": 128
-                    },
-                    {
-                        "reference": -229,
-                        "className": "net.tierion.jvm.learning.utils.bytecode.LocalVariable",
-                        "object": {
-                            "variableClass": "int",
-                            "index": 0,
-                            "test": {
-                                "test": "test",
-                                "test1": "test",
-                                "test2": "test",
-                                "test3": "test",
-                                "test4": "test"
-                            }
-                        }
-                    }
-                ];
+                let memory = this.memory;
                 let preprocess = function (object, depth = 1) {
                     let str = '';
                     for (let subobject in object)
@@ -216,11 +194,9 @@
                     this.put(data, row, i + 1);
                 };
             },
-            put(data, row = 0, i = 1, callback = () => {
-            }) {
+            put(data, row = 0, i = 1) {
                 this.inSimulation = true;
                 if (row >= 3) {
-                    callback();
                     this.replaceBytecodeLines(this.newBytecodeLines);
                     return;
                 }
@@ -234,6 +210,17 @@
                     }, 350);
                     return;
                 }
+                let equal = false;
+                if (this.stack[column][oldLen - i] !== undefined && col[newLen - i] !== undefined)
+                    if (column === 'frames') {
+                        if (this.stack[column][oldLen - i]['className'] === col[newLen - i]['className'] &&
+                            this.stack[column][oldLen - i].method === col[newLen - i].method)
+                            equal = true;
+                    } else if (column === 'operands' || column === 'localVariables') {
+                        if (this.stack[column][oldLen - i]['typeName'] === col[newLen - i]['typeName']
+                            && this.stack[column][oldLen - i]['value'] === col[newLen - i]['value'])
+                            equal = true;
+                    }
                 if (i <= newLen) {
                     if (this.stack[column][oldLen - i] === undefined) {
                         let text = column === 'frames' ?
@@ -243,7 +230,7 @@
                             this.push(row, text, col[newLen - i], data, i);
                         }, 350);
                         return;
-                    } else if (this.stack[column][oldLen - i] !== col[newLen - i]) {
+                    } else if (!equal) {
                         setTimeout(() => {
                             this.pop(row, i, data, i)
                         }, 350);
@@ -261,7 +248,11 @@
                         this.bytecodeLines = newLines;
                         let b = document.getElementById('description')
                             .animate(animations.rightAnimation(), animations.easeOutTiming());
-                        b.onfinish = () => this.inAnimation = false
+                        b.onfinish = () => {
+                            this.inAnimation = false;
+                            if (localStorage.getItem('inSimulation') === 'false')
+                                this.$router.push('/simulation/start');
+                        }
                     }
                 } else this.inAnimation = false;
             },
@@ -308,11 +299,23 @@
             stop() {
                 axios.delete('simulation/current').then(() => {
                     localStorage.setItem("inSimulation", "false");
-                    this.$router.push('/simulation/start');
+                    this.newBytecodeLines = [];
+                    this.put({
+                        'frames': [],
+                        'localVariables': [],
+                        'operands': []
+                    })
                 }).catch(() => {
-                    localStorage.setItem("inSimulation", "false");
-                    this.$router.push('/simulation/start');
-                });
+                        localStorage.setItem("inSimulation", "false");
+                        this.newBytecodeLines = [];
+                        this.put({
+                            'frames': [],
+                            'localVariables': [],
+                            'operands': []
+                        })
+                    }
+                )
+                ;
             },
         },
         created() {
@@ -322,13 +325,18 @@
 </script>
 
 <style scoped>
+    .control_btn {
+        margin-left: 0.5%;
+        margin-right: 0.5%;
+    }
+
     .overlay_text {
         background-color: white;
         margin: 11% auto;
-        min-height: 300px;
+        min-height: 40%;
         text-align: left;
         border: 1px solid;
-        max-height: 500px;
+        max-height: 60%;
         overflow-y: scroll;
     }
 
@@ -351,9 +359,9 @@
     }
 
     .description {
-        max-width: 500px;
-        min-width: 500px;
-        min-height: 400px;
+        max-width: 30%;
+        min-width: 30%;
+        min-height: 40%;
         height: 25%;
         overflow-y: scroll;
         text-align: left;
@@ -378,5 +386,9 @@
         font-size: 13px;
         border-collapse: separate;
         border-spacing: 6px 1px;
+    }
+
+    .highlight {
+        background: dodgerblue;
     }
 </style>

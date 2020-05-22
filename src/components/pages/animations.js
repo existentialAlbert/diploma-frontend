@@ -17,7 +17,7 @@ export default {
     },
     timing() {
         return {
-            duration: 1000,
+            duration: 1040,
             easing: 'ease-in'
         }
     },
