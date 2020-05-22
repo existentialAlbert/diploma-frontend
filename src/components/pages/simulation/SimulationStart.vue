@@ -93,14 +93,13 @@
             }
         },
         beforeCreate() {
-            if (localStorage.getItem("inSimulation") == null)
-                axios('simulation/current').then(() => {
-                    localStorage.setItem("inSimulation", "true");
-                    this.$router.push({path: '/simulation'});
-                }).catch(() => {
-                        localStorage.setItem("inSimulation", "false");
-                    }
-                );
+            axios('simulation/current').then(() => {
+                localStorage.setItem("inSimulation", "true");
+                this.$router.push({path: '/simulation'});
+            }).catch(() => {
+                    localStorage.setItem("inSimulation", "false");
+                }
+            );
         },
         methods: {
             start() {
