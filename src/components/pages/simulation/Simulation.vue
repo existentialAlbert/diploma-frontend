@@ -270,16 +270,20 @@
                         .animate(animations.leftAnimation(), animations.easeOutTiming());
                     t.onfinish = () => {
                         this.bytecodeLines = newLines;
+                        this.instructionDescription = '<strong>Описание текущей инструкции:</strong> ' + this.newInstructionDescription;
                         let b = document.getElementById('description')
                             .animate(animations.rightAnimation(), animations.easeOutTiming());
                         b.onfinish = () => {
                             this.inAnimation = false;
-                            this.instructionDescription = '<strong>Описание текущей инструкции:</strong> ' + this.newInstructionDescription;
                             if (localStorage.getItem('inSimulation') === 'false')
                                 this.$router.push('/simulation/start');
                         }
                     }
-                } else this.inAnimation = false;
+                } else {
+                    this.inAnimation = false;
+                    this.instructionDescription = '<strong>Описание текущей инструкции:</strong> ' + this.newInstructionDescription;
+
+                }
             },
             showMemory() {
                 let overlay = document.getElementById("overlay");
@@ -295,14 +299,15 @@
                 this.inAnimation = true;
 
                 axios('simulation/current').then(response => {
-                    this.newBytecodeLines = response.data.bytecodeLines;
-                    this.put(response.data.stack);
                     this.instructionIndex = response.data.instructionIndex;
                     this.newInstructionDescription = response.data.instructionDescription;
-                    if (response.data.status === 'FINISHED')
+                    this.newBytecodeLines = response.data.bytecodeLines;
+                    this.put(response.data.stack);
+                    if (response.data.status === 'FINISHED') {
+                        alert('status: ' + response.data.status);
                         this.stop();
+                    }
                 }).catch(() => {
-                    this.stop();
                 });
                 axios('simulation/current/memory').then(response => {
                     this.memory = response.data.memory;
@@ -311,10 +316,10 @@
             advance() {
                 this.inAnimation = true;
                 axios.put('simulation/current/advance').then(response => {
-                    this.newBytecodeLines = response.data.bytecodeLines;
-                    this.put(response.data.stack);
                     this.instructionIndex = response.data.instructionIndex;
                     this.newInstructionDescription = response.data.instructionDescription;
+                    this.newBytecodeLines = response.data.bytecodeLines;
+                    this.put(response.data.stack);
                     if (response.data.status === 'FINISHED') {
                         alert('status: ' + response.data.status);
                         this.stop();
