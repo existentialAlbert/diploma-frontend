@@ -90,6 +90,7 @@
                 array: [],
                 stacksNumber: ['frames', 'localVariables', 'operands'],
                 instructionIndex: 0,
+                newInstructionIndex: 0,
                 instructionDescription: "",
                 newInstructionDescription: "",
             }
@@ -270,6 +271,7 @@
                         .animate(animations.leftAnimation(), animations.easeOutTiming());
                     t.onfinish = () => {
                         this.bytecodeLines = newLines;
+                        this.instructionIndex = this.newInstructionIndex;
                         this.instructionDescription = '<strong>Описание текущей инструкции:</strong> ' + this.newInstructionDescription;
                         let b = document.getElementById('description')
                             .animate(animations.rightAnimation(), animations.easeOutTiming());
@@ -282,6 +284,7 @@
                 } else {
                     this.inAnimation = false;
                     this.instructionDescription = '<strong>Описание текущей инструкции:</strong> ' + this.newInstructionDescription;
+                    this.instructionIndex = this.newInstructionIndex;
 
                 }
             },
@@ -299,7 +302,7 @@
                 this.inAnimation = true;
 
                 axios('simulation/current').then(response => {
-                    this.instructionIndex = response.data.instructionIndex;
+                    this.newInstructionIndex = response.data.instructionIndex;
                     this.newInstructionDescription = response.data.instructionDescription;
                     this.newBytecodeLines = response.data.bytecodeLines;
                     this.put(response.data.stack);
@@ -316,7 +319,7 @@
             advance() {
                 this.inAnimation = true;
                 axios.put('simulation/current/advance').then(response => {
-                    this.instructionIndex = response.data.instructionIndex;
+                    this.newInstructionIndex = response.data.instructionIndex;
                     this.newInstructionDescription = response.data.instructionDescription;
                     this.newBytecodeLines = response.data.bytecodeLines;
                     this.put(response.data.stack);
