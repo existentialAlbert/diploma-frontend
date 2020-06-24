@@ -1,6 +1,7 @@
 <template>
     <div>
-        <h2 id="anchor1">Стек</h2>
+        <br>
+        <h2>Симуляция</h2>
         <button :class="control_btn" style="" @click="advance" :disabled="inAnimation">Следующий шаг</button>
         <button :class="control_btn" @click="stop" :disabled="inAnimation">Отменить симуляцию</button>
         <button :class="control_btn" @click="showMemory" :disabled="inAnimation">Память
@@ -8,7 +9,7 @@
         </button>
         <br>
         <br>
-        <div @click="off" id="overlay">
+        <div @click="off" @keydown="off" id="overlay">
             <div class="overflow-auto container col-4 overlay_text shadow-sm rounded">
                 <br>
                 <div v-for="i in memoryInRussian" :key="i">
@@ -32,6 +33,7 @@
                     </template>
                     <br>
                 </span>
+                <br><label v-html="instructionDescription"></label>
             </div>
             <table class="stack">
                 <tr>
@@ -39,13 +41,11 @@
                     <td style="min-width: 140px;width: 140px; height: 35px;"><h3>Локальные переменные</h3></td>
                     <td style="min-width: 140px;width: 140px; height: 35px;"><h3>Стек операндов</h3></td>
                 </tr>
-
-                <tr :id="0">
+                <tr>
                     <td :name="0"></td>
                     <td :name="1"></td>
                     <td :name="2"></td>
                 </tr>
-
                 <tr v-for="(row, index) in rows" :id="index+1" :key="row">
                     <td :name="index1" v-for="(item, index1) in row" :key="item"
                         :class="item == null?'':stack_unit" v-html="item">
@@ -53,6 +53,7 @@
                 </tr>
             </table>
         </div>
+
     </div>
 
 </template>
@@ -79,15 +80,18 @@
                 memory: {},
                 inAnimation: false,
                 stack_unit: 'stack_unit rounded',
-                control_btn: 'control_btn btn btn-outline-secondary',
+                control_btn: 'control_btn btn btn-outline-dark',
                 highlight: 'highlight',
                 stack: {
                     'frames': [],
                     'localVariables': [],
                     'operands': [],
                 },
+                array: [],
                 stacksNumber: ['frames', 'localVariables', 'operands'],
                 instructionIndex: 0,
+                instructionDescription: "",
+                newInstructionDescription: "",
             }
         },
         computed: {
@@ -104,7 +108,7 @@
                         row.push(`<label><strong>${stacks['frames'][i].className}</strong><br>${stacks['frames'][i].method}</label>`);
                     else row.push(null);
                     if (stacks.localVariables[i] != null)
-                        row.push(`<label>${stacks['localVariables'][i].typeName}: ${stacks['localVariables'][i].value}</label>`);
+                        row.push(`<label> <strong>${stacks['localVariables'][i].index}.</strong> ${stacks['localVariables'][i].typeName}: ${stacks['localVariables'][i].value}</label>`);
                     else row.push(null);
                     if (stacks.operands[i] != null)
                         row.push(`<label>${stacks['operands'][i].typeName}: ${stacks['operands'][i].value}</label>`);
@@ -114,25 +118,33 @@
                 return rows;
             },
             memoryInRussian() {
-                let memory = this.memory;
                 let preprocess = function (object, depth = 1) {
+                    console.log(typeof object)
                     let str = '';
-                    for (let subobject in object)
-                        if (typeof object[subobject] === "object")
-                            str += preprocess(object[subobject], depth + 1);
-                        else {
-                            let tab = '-';
-                            for (let i = 1; i < depth; i++)
-                                tab += tab;
-                            str += tab + ' ' + `${subobject}: ${object[subobject]} <br>`
+                    if (typeof object === "object")
+                        for (let subobject in object) {
+                            console.log(subobject)
+                            console.log(typeof subobject)
+                            console.log(object[subobject])
+                            console.log(typeof object[subobject])
+                            if (typeof object[subobject] === "object" && object[subobject] != null)
+                                str += preprocess(object[subobject], depth + 1);
+                            else {
+                                let tab = '-';
+                                for (let i = 1; i < depth; i++)
+                                    tab += tab;
+                                str += tab + ' ' + `${subobject}: ${object[subobject]}<br>`
+                            }
                         }
+                    else
+                        str = '- ' + `${object}`;
                     return str;
                 };
                 let translatedMemory = [];
-                for (let i = 0; i < memory.length; i++) {
-                    let strs = [`Ссылка: ${memory[i].reference}`,
-                        `Имя класса: ${memory[i].className}`,
-                        `Объект: <br>${preprocess(memory[i].object)}`];
+                for (let i = 0; i < this.memory.length; i++) {
+                    let strs = [`Ссылка: ${this.memory[i].reference}`,
+                        `Имя класса: ${this.memory[i].className}`,
+                        `Объект: <br>${preprocess(this.memory[i]['object'])}`];
                     translatedMemory.push(strs)
                 }
                 return translatedMemory;
@@ -141,14 +153,16 @@
         methods: {
             pop(row, index, data, i, current = 1) {
                 let column = document.getElementsByName(row);
+                let rm = animations.removeAnimation();
+                let up = animations.upperAnimation();
                 let t;
-                t = column[1].animate(animations.removeAnimation(), animations.timing());
+                t = column[1].animate(rm, animations.timing());
                 t.onfinish = () => {
                     column[1].innerHTML = '';
                     column[1].classList.remove('stack_unit');
                 };
                 for (let j = 2; j < column.length; j++)
-                    t = column[j].animate(animations.upperAnimation(), animations.timing());
+                    t = column[j].animate(up, animations.timing());
                 if (t === undefined) {
                     this.stack[this.stacksNumber[row]].shift();
                     this.put(data, row, i);
@@ -170,14 +184,18 @@
                 let td = document.getElementsByName(row)[0];
                 td.classList.add('stack_unit');
                 td.innerHTML = element;
-                let b = td.animate(animations.newAnimation(), animations.timing());
+                let neww = animations.newAnimation();
+                let low = animations.lowerAnimation();
+                let b = td.animate(neww, animations.timing());
                 let t;
                 for (let i = 0; i < c.length; i++)
                     for (let j = 1; j < c[i].length; j++)
                         if (i !== row) {
-                            t = c[i][j].animate(animations.hold(), animations.timing());
-                        } else
-                            t = c[i][j].animate(animations.lowerAnimation(), animations.timing());
+                            let hold = animations.hold();
+                            t = c[i][j].animate(hold, animations.timing());
+                        } else {
+                            t = c[i][j].animate(low, animations.timing());
+                        }
                 if (t === undefined) {
                     b.onfinish = () => {
                         td.innerHTML = '';
@@ -216,16 +234,22 @@
                         if (this.stack[column][oldLen - i]['className'] === col[newLen - i]['className'] &&
                             this.stack[column][oldLen - i].method === col[newLen - i].method)
                             equal = true;
-                    } else if (column === 'operands' || column === 'localVariables') {
+                    } else if (column === 'operands') {
                         if (this.stack[column][oldLen - i]['typeName'] === col[newLen - i]['typeName']
                             && this.stack[column][oldLen - i]['value'] === col[newLen - i]['value'])
+                            equal = true;
+                    } else if (column === 'localVariables') {
+                        if (this.stack[column][oldLen - i]['typeName'] === col[newLen - i]['typeName']
+                            && this.stack[column][oldLen - i]['value'] === col[newLen - i]['value']
+                            && this.stack[column][oldLen - i]['index'] === col[newLen - i]['index'])
                             equal = true;
                     }
                 if (i <= newLen) {
                     if (this.stack[column][oldLen - i] === undefined) {
                         let text = column === 'frames' ?
                             `<label><strong>${col[newLen - i].className}</strong><br/>${col[newLen - i].method}` :
-                            `<label>${col[newLen - i].typeName}: ${col[newLen - i].value}</label>`;
+                            column === 'localVariables' ?
+                                `<label> <strong>${col[newLen - i].index}.</strong> ${col[newLen - i].typeName}: ${col[newLen - i].value}</>` : `<label>${col[newLen - i].typeName}: ${col[newLen - i].value}</label>`;
                         setTimeout(() => {
                             this.push(row, text, col[newLen - i], data, i);
                         }, 350);
@@ -250,6 +274,7 @@
                             .animate(animations.rightAnimation(), animations.easeOutTiming());
                         b.onfinish = () => {
                             this.inAnimation = false;
+                            this.instructionDescription = '<strong>Описание текущей инструкции:</strong> ' + this.newInstructionDescription;
                             if (localStorage.getItem('inSimulation') === 'false')
                                 this.$router.push('/simulation/start');
                         }
@@ -268,51 +293,46 @@
             },
             current() {
                 this.inAnimation = true;
-                axios('simulation/current/memory').then(response => {
-                    this.memory = response.data.memory;
-                });
+
                 axios('simulation/current').then(response => {
                     this.newBytecodeLines = response.data.bytecodeLines;
                     this.put(response.data.stack);
                     this.instructionIndex = response.data.instructionIndex;
+                    this.newInstructionDescription = response.data.instructionDescription;
                     if (response.data.status === 'FINISHED')
                         this.stop();
                 }).catch(() => {
                     this.stop();
                 });
-            },
-            advance() {
-                this.inAnimation = true;
                 axios('simulation/current/memory').then(response => {
                     this.memory = response.data.memory;
                 });
+            },
+            advance() {
+                this.inAnimation = true;
                 axios.put('simulation/current/advance').then(response => {
                     this.newBytecodeLines = response.data.bytecodeLines;
                     this.put(response.data.stack);
                     this.instructionIndex = response.data.instructionIndex;
-                    if (response.data.status === 'FINISHED')
+                    this.instructionDescription = response.data.instructionDescription;
+                    if (response.data.status === 'FINISHED') {
+                        alert('status: ' + response.data.status);
                         this.stop();
+                    }
                 }).catch(() => {
                     this.stop()
+                });
+                axios('simulation/current/memory').then(response => {
+                    this.memory = response.data.memory;
                 });
             },
             stop() {
                 axios.delete('simulation/current').then(() => {
                     localStorage.setItem("inSimulation", "false");
-                    this.newBytecodeLines = [];
-                    this.put({
-                        'frames': [],
-                        'localVariables': [],
-                        'operands': []
-                    })
+                    this.$router.push("/simulation/start")
                 }).catch(() => {
                         localStorage.setItem("inSimulation", "false");
-                        this.newBytecodeLines = [];
-                        this.put({
-                            'frames': [],
-                            'localVariables': [],
-                            'operands': []
-                        })
+                        this.$router.push("/simulation/start")
                     }
                 )
                 ;

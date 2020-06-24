@@ -32,7 +32,36 @@ export default {
             {opacity: '100%', offset: 0.63},
             {transform: `translateY(${-56}px)`, opacity: '0%'}]
     },
+    reversedRemove() {
+        return [{transform: `translateY(${0}px)`, opacity: '100%'},
+            {opacity: '100%', offset: 0.63},
+            {transform: `translateY(${56}px)`, opacity: '0%'}]
+    },
+    reversedNew() {
+        return [{
+            transform: `translateY(${56}px)`,
+            opacity: '0%'
+        },
+            {opacity: '0%', offset: 0.63},
+            {
+                transform: `translateY(${0}px)`,
+                opacity: '100%'
+            }]
+    },
+    reversedHold() {
+        const a = 53.7;
+        return [{transform: `translateY(${a}px)`},
+            {transform: `translateY(${a}px)`}]
 
+    },
+    reversedUpper() {
+        return [{transform: `translateY(${0}px)`},
+            {transform: `translateY(${56}px)`}]
+    },
+    reversedLower() {
+        return [{transform: `translateY(${56}px)`},
+            {transform: `translateY(${0}px)`}]
+    },
     hold() {
         const a = -53.7;
         return [{transform: `translateY(${a}px)`},

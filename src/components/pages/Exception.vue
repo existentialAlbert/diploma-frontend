@@ -1,15 +1,16 @@
 <template>
     <div>
-        <h1>Исключение <br/>{{info.exceptionName}}</h1>
-        <h2>Сообщение:</h2>
+        <h2>Исключение</h2>
+        {{info.exceptionName}}
+        <h3>Сообщение:</h3>
         <article>{{info.message}}</article>
-        <h2>Время:</h2>
+        <h3>Время:</h3>
         <article>{{info.throwDate}}</article>
-        <h2>Stack trace:</h2>
+        <h3>Stack trace:</h3>
         <pre>
         {{info.stackTrace}}
         </pre>
-        <button @click="solve">
+        <button class="btn btn-outline-success" @click="solve">
             Решено
         </button>
     </div>
@@ -26,7 +27,7 @@
         },
         methods: {
             solve() {
-                axios.put(`api/errors/${this.$route.code}`).then(() => this.$router.push("/errors/page/0"));
+                axios.put(`api/errors/${this.$route.params.code}`).then(() => this.$router.push("/errors/page/0"));
             }
         },
         created() {

@@ -19,9 +19,6 @@
                     <li>
                         <a class="nav-link" href="/simulation/start">Симуляция</a>
                     </li>
-                    <li v-if="role === 'ADMIN'">
-                        <a class="nav-link" href="/errors/page/0">Ошибки</a>
-                    </li>
                 </ul>
                 <div class="container" v-else>
                     <ul class="navbar-nav ">
@@ -60,6 +57,7 @@
         },
         watch: {
             $route() {
+                alert()
                 this.token = localStorage.getItem("token");
                 this.name = localStorage.getItem("name");
                 this.tokenized = localStorage.getItem("token") != undefined;
@@ -67,7 +65,7 @@
             },
         },
         methods: {
-            exit: function () {
+            exit() {
                 this.name = undefined;
                 this.token = undefined;
                 this.tokenized = false;
@@ -75,7 +73,7 @@
                 localStorage.removeItem("name");
                 this.$router.push("/");
             },
-            personalCabinet: function () {
+            personalCabinet() {
                 this.$router.push('/users/user/' + localStorage.getItem("name"));
             },
             back(event) {

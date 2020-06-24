@@ -4,7 +4,7 @@
         <h1>Регистрация</h1>
         <br/>
         <ErrorBox v-bind:errors="errorRow"></ErrorBox>
-        <form  class="form-control" onsubmit="return false;">
+        <form class="form-group" onsubmit="return false;">
             <label>
                 Введите свой никнейм:<br/>
                 <input class="form-control" type="text" v-model="login" maxlength="25"/>

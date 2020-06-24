@@ -77,7 +77,7 @@ axios.interceptors.response.use(response => {
     if (error.response.data.status === 403 && window.location.pathname !== "/") {
         window.location.replace("/");
     }
-    if (error.response.data.status === 500 && error.response.data.startsWith("<!doctype html>"))
+    if (error.response.data.status === 500)
         axios.post("api/auth/refresh").then(response => {
             localStorage.setItem("token", response.data["token"]);
         });

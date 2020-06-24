@@ -13,7 +13,7 @@
                 </textarea>
             </label>
             <br>
-            <button class="btn btn-outline-primary" id='startButton' style="margin-bottom: 3%" @click="start">
+            <button class="btn btn-outline-dark" id='startButton' style="margin-bottom: 3%" @click="start">
                 Начать симуляцию
             </button>
             <br/>
