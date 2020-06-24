@@ -314,7 +314,7 @@
                     this.newBytecodeLines = response.data.bytecodeLines;
                     this.put(response.data.stack);
                     this.instructionIndex = response.data.instructionIndex;
-                    this.instructionDescription = response.data.instructionDescription;
+                    this.newInstructionDescription = response.data.instructionDescription;
                     if (response.data.status === 'FINISHED') {
                         alert('status: ' + response.data.status);
                         this.stop();

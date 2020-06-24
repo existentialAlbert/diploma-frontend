@@ -57,7 +57,6 @@
         },
         watch: {
             $route() {
-                alert()
                 this.token = localStorage.getItem("token");
                 this.name = localStorage.getItem("name");
                 this.tokenized = localStorage.getItem("token") != undefined;
