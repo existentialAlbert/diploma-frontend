@@ -171,11 +171,12 @@
                 }
                 t.onfinish = () => {
                     this.stack[this.stacksNumber[row]].shift();
-                    if (current !== index)
-                        setTimeout(() => {
-                            this.pop(row, index, data, i, current + 1);
-                        }, 350);
-                    else this.put(data, row, i)
+                    // if (current !== index)
+                    //     setTimeout(() => {
+                    //         this.pop(row, index, data, i, current + 1);
+                    //     }, 350);
+                    // else
+                    this.put(data, row, i)
                 };
             },
             push(row, element, el, data, i) {
@@ -230,29 +231,39 @@
                     return;
                 }
                 let equal = false;
-                if (this.stack[column][oldLen - i] !== undefined && col[newLen - i] !== undefined)
+                if (this.stack[column][oldLen - i] !== undefined && col[newLen - i] !== undefined) {
                     if (column === 'frames') {
                         equal = (this.stack[column][oldLen - i]['className'] === col[newLen - i]['className'] &&
                             this.stack[column][oldLen - i]['method'] === col[newLen - i]['method'])
                     } else if (column === 'operands') {
-                        equal = (this.stack[column][oldLen - i]['typeName'] === col[newLen - i]['typeName']
-                            && this.stack[column][oldLen - i]['value'] === col[newLen - i]['value'])
+                        equal = this.stack[column][oldLen - i]['typeName'] === col[newLen - i]['typeName']
+                            && this.stack[column][oldLen - i]['value'] === col[newLen - i]['value'];
+                        // console.log(this.stack[column][oldLen - i]['typeName'])
+                        // console.log(col[newLen - i]['typeName'])
+                        // console.log(this.stack[column][oldLen - i]['value'])
+                        // console.log(col[newLen - i]['value'])
                     } else if (column === 'localVariables') {
                         equal = (this.stack[column][oldLen - i]['typeName'] === col[newLen - i]['typeName']
                             && this.stack[column][oldLen - i]['value'] === col[newLen - i]['value']
                             && this.stack[column][oldLen - i]['index'] === col[newLen - i]['index']);
                     }
+                }
                 if (i <= newLen) {
                     if (this.stack[column][oldLen - i] === undefined) {
                         let text = column === 'frames' ?
                             `<label><strong>${col[newLen - i].className}</strong><br/>${col[newLen - i].method}` :
                             column === 'localVariables' ?
-                                `<label> <strong>${col[newLen - i].index}.</strong> ${col[newLen - i].typeName}: ${col[newLen - i].value}</>` : `<label>${col[newLen - i].typeName}: ${col[newLen - i].value}</label>`;
+                                `<label> <strong>${col[newLen - i].index}.</strong> ${col[newLen - i].typeName}: ${col[newLen - i].value}</label>` :
+                                `<label>${col[newLen - i].typeName}: ${col[newLen - i].value}</label>`;
                         setTimeout(() => {
                             this.push(row, text, col[newLen - i], data, i);
                         }, 350);
                         return;
                     } else if (!equal) {
+                        console.log(this.stack[column][oldLen - i]['typeName'])
+                        console.log(col[newLen - i]['typeName'])
+                        console.log(this.stack[column][oldLen - i]['value'])
+                        console.log(col[newLen - i]['value'])
                         setTimeout(() => {
                             this.pop(row, i, data, i)
                         }, 350);
@@ -297,41 +308,47 @@
             },
             current() {
                 this.inAnimation = true;
-                // this.put({'operands': ]})
-                axios('simulation/current').then(response => {
-                    this.newInstructionIndex = response.data.instructionIndex;
-                    this.newInstructionDescription = response.data.instructionDescription;
-                    this.newBytecodeLines = response.data.bytecodeLines;
-                    this.put(response.data.stack);
-                    axios('simulation/current/memory').then(response => {
-                        this.memory = response.data.memory;
-                    });
-                    if (response.data.status === 'FINISHED') {
-                        alert('status: ' + response.data.status);
-                        this.stop();
-                    }
-
-                }).catch(() => {
-                });
+                let sample = {'typeName': 'INT', 'value': 128};
+                let sample1 = {'typeName': 'INT', 'value': 1};
+                let sample2 = {'typeName': 'REFERENCE', 'value': 0};
+                this.put({'operands': [sample, sample1, sample2], 'localVariables': [], 'frames': []});
+                // axios('simulation/current').then(response => {
+                //     this.newInstructionIndex = response.data.instructionIndex;
+                //     this.newInstructionDescription = response.data.instructionDescription;
+                //     this.newBytecodeLines = response.data.bytecodeLines;
+                //     this.put(response.data.stack);
+                //     axios('simulation/current/memory').then(response => {
+                //         this.memory = response.data.memory;
+                //     });
+                //     if (response.data.status === 'FINISHED') {
+                //         alert('status: ' + response.data.status);
+                //         this.stop();
+                //     }
+                //
+                // }).catch(() => {
+                // });
 
             },
             advance() {
                 this.inAnimation = true;
-                axios.put('simulation/current/advance').then(response => {
-                    this.newInstructionIndex = response.data.instructionIndex;
-                    this.newInstructionDescription = response.data.instructionDescription;
-                    this.newBytecodeLines = response.data.bytecodeLines;
-                    this.put(response.data.stack);
-                    axios('simulation/current/memory').then(response => {
-                        this.memory = response.data.memory;
-                    });
-                    if (response.data.status === 'FINISHED') {
-                        alert('status: ' + response.data.status);
-                        this.stop();
-                    }
-                }).catch(() => {
-                    this.stop()
-                });
+                let sample = {'typeName': 'INT', 'value': 129};
+                let sample2 = {'typeName': 'REFERENCE', 'value': 0};
+                this.put({'operands': [sample, sample2], 'localVariables': [], 'frames': []});
+                // axios.put('simulation/current/advance').then(response => {
+                //     this.newInstructionIndex = response.data.instructionIndex;
+                //     this.newInstructionDescription = response.data.instructionDescription;
+                //     this.newBytecodeLines = response.data.bytecodeLines;
+                //     this.put(response.data.stack);
+                //     axios('simulation/current/memory').then(response => {
+                //         this.memory = response.data.memory;
+                //     });
+                //     if (response.data.status === 'FINISHED') {
+                //         alert('status: ' + response.data.status);
+                //         this.stop();
+                //     }
+                // }).catch(() => {
+                //     this.stop()
+                // });
             },
             stop() {
                 axios.delete('simulation/current').then(() => {
@@ -343,6 +360,7 @@
                     }
                 )
                 ;
+                //this.current()
             },
         },
         created() {
