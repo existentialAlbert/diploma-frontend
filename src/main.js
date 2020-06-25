@@ -47,21 +47,9 @@ const routes = [
     {path: '/errors/error/:code', component: Exception},
     {
         path: '/simulation/start', component: SimulationStart,
-        beforeEnter: (to, from, next) => {
-            if (localStorage.getItem("inSimulation") !== "true")
-                next();
-            else
-                next({path: '/simulation'});
-        }
     },
     {
         path: '/simulation', component: Simulation,
-        beforeEnter: (to, from, next) => {
-            if (localStorage.getItem("inSimulation") !== "true")
-                next({path: '/simulation/start'});
-            else
-                next();
-        },
     },
 ];
 const axios = require('axios').default;

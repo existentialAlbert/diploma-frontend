@@ -232,18 +232,15 @@
                 let equal = false;
                 if (this.stack[column][oldLen - i] !== undefined && col[newLen - i] !== undefined)
                     if (column === 'frames') {
-                        if (this.stack[column][oldLen - i]['className'] === col[newLen - i]['className'] &&
-                            this.stack[column][oldLen - i].method === col[newLen - i].method)
-                            equal = true;
+                        equal = (this.stack[column][oldLen - i]['className'] === col[newLen - i]['className'] &&
+                            this.stack[column][oldLen - i]['method'] === col[newLen - i]['method'])
                     } else if (column === 'operands') {
-                        if (this.stack[column][oldLen - i]['typeName'] === col[newLen - i]['typeName']
+                        equal = (this.stack[column][oldLen - i]['typeName'] === col[newLen - i]['typeName']
                             && this.stack[column][oldLen - i]['value'] === col[newLen - i]['value'])
-                            equal = true;
                     } else if (column === 'localVariables') {
-                        if (this.stack[column][oldLen - i]['typeName'] === col[newLen - i]['typeName']
+                        equal = (this.stack[column][oldLen - i]['typeName'] === col[newLen - i]['typeName']
                             && this.stack[column][oldLen - i]['value'] === col[newLen - i]['value']
-                            && this.stack[column][oldLen - i]['index'] === col[newLen - i]['index'])
-                            equal = true;
+                            && this.stack[column][oldLen - i]['index'] === col[newLen - i]['index']);
                     }
                 if (i <= newLen) {
                     if (this.stack[column][oldLen - i] === undefined) {
@@ -300,21 +297,23 @@
             },
             current() {
                 this.inAnimation = true;
-
+                // this.put({'operands': ]})
                 axios('simulation/current').then(response => {
                     this.newInstructionIndex = response.data.instructionIndex;
                     this.newInstructionDescription = response.data.instructionDescription;
                     this.newBytecodeLines = response.data.bytecodeLines;
                     this.put(response.data.stack);
+                    axios('simulation/current/memory').then(response => {
+                        this.memory = response.data.memory;
+                    });
                     if (response.data.status === 'FINISHED') {
                         alert('status: ' + response.data.status);
                         this.stop();
                     }
+
                 }).catch(() => {
                 });
-                axios('simulation/current/memory').then(response => {
-                    this.memory = response.data.memory;
-                });
+
             },
             advance() {
                 this.inAnimation = true;
@@ -323,15 +322,15 @@
                     this.newInstructionDescription = response.data.instructionDescription;
                     this.newBytecodeLines = response.data.bytecodeLines;
                     this.put(response.data.stack);
+                    axios('simulation/current/memory').then(response => {
+                        this.memory = response.data.memory;
+                    });
                     if (response.data.status === 'FINISHED') {
                         alert('status: ' + response.data.status);
                         this.stop();
                     }
                 }).catch(() => {
                     this.stop()
-                });
-                axios('simulation/current/memory').then(response => {
-                    this.memory = response.data.memory;
                 });
             },
             stop() {
