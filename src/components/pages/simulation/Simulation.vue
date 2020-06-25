@@ -308,47 +308,47 @@
             },
             current() {
                 this.inAnimation = true;
-                let sample = {'typeName': 'INT', 'value': 128};
-                let sample1 = {'typeName': 'INT', 'value': 1};
-                let sample2 = {'typeName': 'REFERENCE', 'value': 0};
-                this.put({'operands': [sample, sample1, sample2], 'localVariables': [], 'frames': []});
-                // axios('simulation/current').then(response => {
-                //     this.newInstructionIndex = response.data.instructionIndex;
-                //     this.newInstructionDescription = response.data.instructionDescription;
-                //     this.newBytecodeLines = response.data.bytecodeLines;
-                //     this.put(response.data.stack);
-                //     axios('simulation/current/memory').then(response => {
-                //         this.memory = response.data.memory;
-                //     });
-                //     if (response.data.status === 'FINISHED') {
-                //         alert('status: ' + response.data.status);
-                //         this.stop();
-                //     }
-                //
-                // }).catch(() => {
-                // });
+                // let sample = {'typeName': 'INT', 'value': 128};
+                // let sample1 = {'typeName': 'INT', 'value': 1};
+                // let sample2 = {'typeName': 'REFERENCE', 'value': 0};
+                // this.put({'operands': [sample, sample1, sample2], 'localVariables': [], 'frames': []});
+                axios('simulation/current').then(response => {
+                    this.newInstructionIndex = response.data.instructionIndex;
+                    this.newInstructionDescription = response.data.instructionDescription;
+                    this.newBytecodeLines = response.data.bytecodeLines;
+                    this.put(response.data.stack);
+                    axios('simulation/current/memory').then(response => {
+                        this.memory = response.data.memory;
+                    });
+                    if (response.data.status === 'FINISHED') {
+                        alert('status: ' + response.data.status);
+                        this.stop();
+                    }
+
+                }).catch(() => {
+                });
 
             },
             advance() {
                 this.inAnimation = true;
-                let sample = {'typeName': 'INT', 'value': 129};
-                let sample2 = {'typeName': 'REFERENCE', 'value': 0};
-                this.put({'operands': [sample, sample2], 'localVariables': [], 'frames': []});
-                // axios.put('simulation/current/advance').then(response => {
-                //     this.newInstructionIndex = response.data.instructionIndex;
-                //     this.newInstructionDescription = response.data.instructionDescription;
-                //     this.newBytecodeLines = response.data.bytecodeLines;
-                //     this.put(response.data.stack);
-                //     axios('simulation/current/memory').then(response => {
-                //         this.memory = response.data.memory;
-                //     });
-                //     if (response.data.status === 'FINISHED') {
-                //         alert('status: ' + response.data.status);
-                //         this.stop();
-                //     }
-                // }).catch(() => {
-                //     this.stop()
-                // });
+                // let sample = {'typeName': 'INT', 'value': 129};
+                // let sample2 = {'typeName': 'REFERENCE', 'value': 0};
+                // this.put({'operands': [sample, sample2], 'localVariables': [], 'frames': []});
+                axios.put('simulation/current/advance').then(response => {
+                    this.newInstructionIndex = response.data.instructionIndex;
+                    this.newInstructionDescription = response.data.instructionDescription;
+                    this.newBytecodeLines = response.data.bytecodeLines;
+                    this.put(response.data.stack);
+                    axios('simulation/current/memory').then(response => {
+                        this.memory = response.data.memory;
+                    });
+                    if (response.data.status === 'FINISHED') {
+                        alert('status: ' + response.data.status);
+                        this.stop();
+                    }
+                }).catch(() => {
+                    this.stop()
+                });
             },
             stop() {
                 axios.delete('simulation/current').then(() => {
